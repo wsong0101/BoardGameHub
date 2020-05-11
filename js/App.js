@@ -1,25 +1,24 @@
 import React from 'react'
-import {hot} from "react-hot-loader"
+import { Route, Switch } from 'react-router-dom'
 import './App.css'
+
+import Main from './pages/Main'
+import ItemCreate from './pages/ItemCreate'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload....
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+        <nav className="navbar sticky-top navbar-light bg-light">
+            <a className="navbar-brand" href="#">Sticky top</a>
+        </nav>
+        <div className="mt-2">
+          <Switch>
+              <Route exact path="/" component={Main} />
+              <Route exact path="/item/create" component={ItemCreate} />
+          </Switch>
+        </div>
     </div>
   );
 }
 
-export default hot(module)(App)
+export default App

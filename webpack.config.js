@@ -24,5 +24,4 @@ module.exports = {
     publicPath: "/dist/",
     filename: "bundle.js"
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()]
 };
