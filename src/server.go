@@ -20,6 +20,7 @@ func main() {
 	r.GET("/item/create", returnApp)
 
 	r.POST("/register", handler.OnRegister)
+	r.POST("/login", handler.OnLogin)
 	r.POST("/item/geekinfo", geek.ReturnGeekInfo)
 
 	r.Static("/dist", "../dist")
