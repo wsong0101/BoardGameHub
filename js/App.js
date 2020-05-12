@@ -37,6 +37,23 @@ export default class App extends React.Component {
               <Route exact path="/item/create" component={ItemCreate} />
           </Switch>
         </div>
+
+        <div className="modal" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">title here</h5>
+              </div>
+              <div className="modal-body">
+                <p>body here</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-primary" data-dismiss="modal">확인</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     )
   }

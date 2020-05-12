@@ -1,8 +1,10 @@
 import React from 'react'
+import {useHistory} from 'react-router-dom'
 import Axios from 'axios'
 import Checker from '../util/InputChecker'
 import InputText from '../input/InputText'
 import DisplayNotice from '../common/displayNotice'
+import Popup from '../util/popup'
 
 export default class PageRegister extends React.Component {
   constructor(props) {
@@ -93,7 +95,18 @@ export default class PageRegister extends React.Component {
     // do submit
     Axios.post("/register", form)
     .then( res => {
-      console.log(res)
+      Popup.show("회원가입 완료",
+        "축하합니다! 회원가입을 마무리하기 위해 이메일 인증이 필요합니다.",
+        () => {
+          location.href = "/"
+        })
+    })
+    .catch( err => {
+      if (err.response) {
+        this.setState({
+          err: "에러: " + err.response.data.error
+        })
+      }
     })
   }
 

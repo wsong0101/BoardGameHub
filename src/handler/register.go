@@ -4,23 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/wsong0101/BoardGameHub/src/user"
 )
 
-type RegisterForm struct {
-	Email      string `form:"inputEmail" binding:"required"`
-	Nickname   string `form:"inputNickname" binding:"required"`
-	Password   string `form:"inputPassword" binding:"required"`
-	PasswordRe string `form:"inputPasswordRe" binding:"required"`
-}
-
 func OnRegister(c *gin.Context) {
-	var form RegisterForm
+	var form user.RegisterForm
 	if err := c.ShouldBind(&form); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	// 입력값 유효한지 여부 서버검사 필요.
+
 	if form.Password != form.PasswordRe {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "password mismatch"})
+		return
+	}
+
+	if err := user.CreateUserFromInput(form); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -10,7 +10,6 @@ import (
 	"github.com/wsong0101/BoardGameHub/src/config"
 )
 
-// 커넥션을 더 늘려야 하는걸까?
 var db *gorm.DB = nil
 
 func init() {
@@ -28,6 +27,9 @@ func init() {
 		log.Println(err)
 		os.Exit(2)
 	}
+
+	db.DB().SetMaxIdleConns(1)
+	db.DB().SetMaxOpenConns(10)
 }
 
 func Get() *gorm.DB {
