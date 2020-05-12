@@ -13,8 +13,11 @@ func main() {
 	r.LoadHTMLGlob("../templates/*")
 
 	r.GET("/", returnApp)
+	r.GET("/register", returnApp)
+	r.GET("/login", returnApp)
 	r.GET("/item/create", returnApp)
 
+	r.POST("/register")
 	r.POST("/item/geekinfo", geek.ReturnGeekInfo)
 
 	r.Static("/dist", "../dist")
