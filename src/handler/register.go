@@ -36,10 +36,20 @@ func OnLogin(c *gin.Context) {
 		return
 	}
 
-	if err := user.LoginFromInput(form); err != nil {
+	if err := user.LoginFromInput(c, form); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "login success"})
+}
+
+func OnSessionUser(c *gin.Context) {
+	user, err := user.GetSessionUser(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"nickname": user.Nickname, "email": user.Email})
 }

@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 
 	_ "github.com/wsong0101/BoardGameHub/src/db"
@@ -12,6 +14,9 @@ import (
 
 func main() {
 	r := gin.Default()
+	store := cookie.NewStore([]byte("secret"))
+	r.Use(sessions.Sessions("mysession", store))
+
 	r.LoadHTMLGlob("../templates/*")
 
 	r.GET("/", returnApp)
@@ -21,6 +26,7 @@ func main() {
 
 	r.POST("/register", handler.OnRegister)
 	r.POST("/login", handler.OnLogin)
+	r.POST("/session/user", handler.OnSessionUser)
 	r.POST("/item/geekinfo", geek.ReturnGeekInfo)
 
 	r.Static("/dist", "../dist")
