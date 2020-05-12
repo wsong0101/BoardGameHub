@@ -64,6 +64,7 @@ export default class PageRegister extends React.Component {
     input[index].valid = valid
     this.setState({
       input: input,
+      err: "",
     })
   }
 
@@ -90,7 +91,10 @@ export default class PageRegister extends React.Component {
     }
 
     // do submit
-
+    Axios.post("/register", form)
+    .then( res => {
+      console.log(res)
+    })
   }
 
   render() {

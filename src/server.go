@@ -5,7 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	_ "github.com/wsong0101/BoardGameHub/src/db"
 	"github.com/wsong0101/BoardGameHub/src/geek"
+	"github.com/wsong0101/BoardGameHub/src/handler"
 )
 
 func main() {
@@ -17,7 +19,7 @@ func main() {
 	r.GET("/login", returnApp)
 	r.GET("/item/create", returnApp)
 
-	r.POST("/register")
+	r.POST("/register", handler.OnRegister)
 	r.POST("/item/geekinfo", geek.ReturnGeekInfo)
 
 	r.Static("/dist", "../dist")
