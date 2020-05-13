@@ -26,6 +26,7 @@ func main() {
 
 	r.POST("/register", handler.OnRegister)
 	r.POST("/login", handler.OnLogin)
+	r.POST("/logout", handler.OnLogout)
 	r.POST("/session/user", handler.OnSessionUser)
 	r.POST("/item/geekinfo", geek.ReturnGeekInfo)
 

@@ -44,6 +44,15 @@ func OnLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "login success"})
 }
 
+func OnLogout(c *gin.Context) {
+	if err := user.Logout(c); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "logout success"})
+}
+
 func OnSessionUser(c *gin.Context) {
 	user, err := user.GetSessionUser(c)
 	if err != nil {

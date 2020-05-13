@@ -25,7 +25,6 @@ export default function App(props) {
   function loadSessionUser() {
     Axios.post("/session/user")
     .then(res => {
-      console.log(res)
       setNickname(res.data.nickname)
       setEmail(res.data.email)
     })
@@ -33,6 +32,17 @@ export default function App(props) {
       console.log(err.response)
     })
   }
+
+  function sendLogout() {
+    Axios.post("/logout")
+    .then(res => {
+      setNickname("")
+      setEmail("")
+    })
+    .catch(err => {
+      console.log(err.response)
+    })
+  } 
 
   function displayLoginStatus() {
     if (email == "") {
@@ -53,7 +63,7 @@ export default function App(props) {
           <a className="nav-link">Welcome! {nickname}</a>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/register">로그아웃</Link>
+          <a className="nav-link hand" onClick={sendLogout}>로그아웃</a>
         </li>
     </ul>
     )
