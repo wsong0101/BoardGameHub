@@ -36,12 +36,13 @@ func OnLogin(c *gin.Context) {
 		return
 	}
 
-	if err := user.LoginFromInput(c, form); err != nil {
+	dbUser, err := user.LoginFromInput(c, form)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "login success"})
+	c.JSON(http.StatusOK, gin.H{"email": dbUser.Email, "nickname": dbUser.Nickname})
 }
 
 func OnLogout(c *gin.Context) {
@@ -60,5 +61,5 @@ func OnSessionUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"nickname": user.Nickname, "email": user.Email})
+	c.JSON(http.StatusOK, gin.H{"email": user.Email, "nickname": user.Nickname})
 }

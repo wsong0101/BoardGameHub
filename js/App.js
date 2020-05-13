@@ -2,21 +2,30 @@ import React, {useState, useEffect} from 'react'
 import { Route, Switch, useLocation, Link } from 'react-router-dom'
 import './App.css'
 
+import {AuthContext} from './util/context'
+import LoginRoute from './loginRoute'
 import Main from './pages/Main'
 import PageRegister from './pages/PageRegister'
 import PageLogin from './pages/PageLogin'
+import PageUserImport from './pages/pageUserImport'
 import ItemCreate from './pages/ItemCreate'
 import Axios from 'axios'
 
 export default function App(props) {
   let location = useLocation()
   
-  const [nickname, setNickname] = useState("")
-  const [email, setEmail] = useState("")
+  let existingUserInfo = (sessionStorage.userInfo != "undefined") ?
+    JSON.parse(sessionStorage.userInfo) : undefined
+  const [userInfo, setUserInfo] = useState(existingUserInfo)
 
-  useEffect(() => {
-    loadSessionUser()
-  })
+  const appSetUserInfo = (data) => {
+    sessionStorage.setItem("userInfo", JSON.stringify(data))
+    setUserInfo(data)
+  }
+
+  function isLoggedIn() {
+    return userInfo !== undefined
+  }
 
   function getLoginUri() {
     return "/login?url=" + encodeURIComponent(location.pathname)
@@ -25,8 +34,7 @@ export default function App(props) {
   function loadSessionUser() {
     Axios.post("/session/user")
     .then(res => {
-      setNickname(res.data.nickname)
-      setEmail(res.data.email)
+      appSetUserInfo(res.data)
     })
     .catch(err => {
       console.log(err.response)
@@ -36,8 +44,7 @@ export default function App(props) {
   function sendLogout() {
     Axios.post("/logout")
     .then(res => {
-      setNickname("")
-      setEmail("")
+      appSetUserInfo()
     })
     .catch(err => {
       console.log(err.response)
@@ -45,27 +52,35 @@ export default function App(props) {
   } 
 
   function displayLoginStatus() {
-    if (email == "") {
+    if (isLoggedIn()) {
       return (
         <ul className="navbar-nav">
           <li className="nav-item">
-            <Link className="nav-link" to={getLoginUri()}>로그인</Link>
+            <div className="dropdown">
+              <a className="nav-link dropdown-toggle hand" id="userMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                  Welcome! {userInfo.nickname}
+              </a>
+              <div className="dropdown-menu" aria-labelledby="userMenuButton">
+                <Link className="dropdown-item" to="/user/import">Collection 가져오기</Link>
+              </div>
+            </div>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/register">회원가입</Link>
+            <a className="nav-link hand" onClick={sendLogout}>로그아웃</a>
           </li>
-        </ul>
+      </ul>
       )
-    }
+    }    
     return (
       <ul className="navbar-nav">
         <li className="nav-item">
-          <a className="nav-link">Welcome! {nickname}</a>
+          <Link className="nav-link" to={getLoginUri()}>로그인</Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link hand" onClick={sendLogout}>로그아웃</a>
+          <Link className="nav-link" to="/register">회원가입</Link>
         </li>
-    </ul>
+      </ul>
     )
   }
 
@@ -76,12 +91,15 @@ export default function App(props) {
         {displayLoginStatus()}
       </nav>
       <div className="mt-2">
-        <Switch>
-            <Route exact path="/" component={Main} />
-            <Route exact path="/register" component={PageRegister} />
-            <Route exact path="/login" component={PageLogin} />
-            <Route exact path="/item/create" component={ItemCreate} />
-        </Switch>
+        <AuthContext.Provider value={{ userInfo, setUserInfo: appSetUserInfo}}>
+          <Switch>
+              <Route exact path="/" component={Main} />
+              <Route exact path="/register" component={PageRegister} />
+              <Route exact path="/login" component={PageLogin} />
+              <LoginRoute exact path="/user/import" component={PageUserImport} />
+              <LoginRoute exact path="/item/create" component={ItemCreate} />
+          </Switch>
+        </AuthContext.Provider>
       </div>
 
       <div className="modal" tabIndex="-1" role="dialog">

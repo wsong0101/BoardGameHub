@@ -54,18 +54,18 @@ func CreateUserFromInput(form RegisterForm) error {
 	return nil
 }
 
-func LoginFromInput(c *gin.Context, form LoginForm) error {
+func LoginFromInput(c *gin.Context, form LoginForm) (db.User, error) {
 	dbCon := db.Get()
 	var user db.User
 	dbCon.Where("email = ?", form.Email).First(&user)
 	if user.ID <= 0 {
-		return errors.New("invalid email")
+		return user, errors.New("invalid email")
 	}
 	if err := util.ComparePassword(user.Password, form.Password); err != nil {
-		return errors.New("invalid password")
+		return user, errors.New("invalid password")
 	}
 
-	return login(c, user.ID)
+	return user, login(c, user.ID)
 }
 
 func GetSessionUser(c *gin.Context) (db.User, error) {

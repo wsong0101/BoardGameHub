@@ -4,30 +4,19 @@ import Axios from 'axios'
 import Checker from '../util/InputChecker'
 import InputText from '../input/InputText'
 import DisplayNotice from '../common/displayNotice'
-import { useAuth } from '../util/context'
 
-export default function PageLogin(props) {
+export default function UserImport() {
   let query = new URLSearchParams(useLocation().search)
   let history = useHistory()
 
-  const { setUserInfo } = useAuth();
   const [input, setInput] = useState([
     {
-      "name": "inputEmail",
+      "name": "inputGeekUsername",
       "value": "",
       "valid": false,
-      "label": "이메일 주소",
-      "description": "가입할 때 사용했던 이메일주소입니다.",
-      "checker": Checker.checkEmail,
-      "placeholder": "name@example.com",
-    },
-    {
-      "name": "inputPassword",
-      "value": "",
-      "valid": false,
-      "label": "비밀번호",
-      "description": "가입할 때 사용했던 비밀번호입니다.",
-      "checker": Checker.checkLength.bind(null, 1),
+      "label": "BGG 유저 이름",
+      "description": "BoardGameGeek에서 사용하는 유저이름을 입력합니다.",
+      "checker": Checker.checkLength.bind(null, 2),
     },
   ])
   const [err, setError] = useState("")
@@ -55,7 +44,6 @@ export default function PageLogin(props) {
     // do submit
     Axios.post("/login", form)
     .then( res => {
-      setUserInfo(res.data)
       history.push(query.get("url"))
     })
     .catch( err => {
@@ -68,12 +56,11 @@ export default function PageLogin(props) {
   return (
     <div className="content py-4 px-3">
       <form onSubmit={handleSubmit}>
-        <h4>로그인</h4>
+        <h4>Collection 가져오기</h4>
         <hr/>
         <DisplayNotice content={err} />
         <InputText info={input[0]} onChange={handleChange.bind(null, 0)} />
-        <InputText info={input[1]} onChange={handleChange.bind(null, 1)} type="password" />
-        <button type="submit" className="btn btn-primary">로그인</button>
+        <button type="submit" className="btn btn-primary">가져오기</button>
       </form>
     </div>
   )

@@ -10,6 +10,7 @@ import (
 	_ "github.com/wsong0101/BoardGameHub/src/db"
 	"github.com/wsong0101/BoardGameHub/src/geek"
 	"github.com/wsong0101/BoardGameHub/src/handler"
+	"github.com/wsong0101/BoardGameHub/src/user"
 )
 
 func main() {
@@ -22,13 +23,17 @@ func main() {
 	r.GET("/", returnApp)
 	r.GET("/register", returnApp)
 	r.GET("/login", returnApp)
+	r.GET("/user/import", returnApp)
 	r.GET("/item/create", returnApp)
+
+	loginAuth := r.Group("/")
+	loginAuth.Use(AuthRequired)
 
 	r.POST("/register", handler.OnRegister)
 	r.POST("/login", handler.OnLogin)
-	r.POST("/logout", handler.OnLogout)
+	loginAuth.POST("/logout", handler.OnLogout)
 	r.POST("/session/user", handler.OnSessionUser)
-	r.POST("/item/geekinfo", geek.ReturnGeekInfo)
+	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)
 
 	r.Static("/dist", "../dist")
 
@@ -45,4 +50,20 @@ func returnApp(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title": "Welcome!",
 	})
+}
+
+func AuthRequired(c *gin.Context) {
+	user, err := user.GetSessionUser(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "login required"})
+		return
+	}
+
+	// Need to check user auth level (eg. normal, super, amdin..)
+	if user.Email == "" {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "login required"})
+		return
+	}
+
+	c.Next()
 }
