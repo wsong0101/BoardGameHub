@@ -593,7 +593,7 @@ eval("\n\nvar bind = __webpack_require__(/*! ./helpers/bind */ \"./node_modules/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/lib/css-base.js */ \"./node_modules/css-loader/lib/css-base.js\")(false);\n// imports\n\n\n// module\nexports.push([module.i, \".content {\\r\\n  background-color: #ffffff;\\r\\n}\\r\\n\\r\\n.hand {\\r\\n  cursor: hand;\\r\\n}\", \"\"]);\n\n// exports\n\n\n//# sourceURL=webpack:///./js/App.css?./node_modules/css-loader");
+eval("exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/lib/css-base.js */ \"./node_modules/css-loader/lib/css-base.js\")(false);\n// imports\n\n\n// module\nexports.push([module.i, \".content {\\r\\n  background-color: #ffffff;\\r\\n}\\r\\n\\r\\n.hand {\\r\\n  cursor: pointer;\\r\\n}\", \"\"]);\n\n// exports\n\n\n//# sourceURL=webpack:///./js/App.css?./node_modules/css-loader");
 
 /***/ }),
 
