@@ -33,6 +33,7 @@ func main() {
 	r.POST("/login", handler.OnLogin)
 	loginAuth.POST("/logout", handler.OnLogout)
 	r.POST("/session/user", handler.OnSessionUser)
+	loginAuth.POST("/user/import", geek.OnUserImport)
 	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)
 
 	r.Static("/dist", "../dist")

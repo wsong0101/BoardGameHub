@@ -14,7 +14,7 @@ import Axios from 'axios'
 export default function App(props) {
   let location = useLocation()
   
-  let existingUserInfo = (sessionStorage.userInfo != "undefined") ?
+  let existingUserInfo = (sessionStorage.userInfo != undefined && sessionStorage.userInfo != "undefined") ?
     JSON.parse(sessionStorage.userInfo) : undefined
   const [userInfo, setUserInfo] = useState(existingUserInfo)
 

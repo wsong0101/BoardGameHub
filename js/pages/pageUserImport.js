@@ -42,9 +42,9 @@ export default function UserImport() {
     }
 
     // do submit
-    Axios.post("/login", form)
+    Axios.post("/user/import", form)
     .then( res => {
-      history.push(query.get("url"))
+      console.log(res)
     })
     .catch( err => {
       if (err.response) {
