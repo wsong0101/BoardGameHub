@@ -8,7 +8,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/abadojack/whatlanggo"
 	"github.com/gin-gonic/gin"
+	"github.com/wsong0101/BoardGameHub/src/db"
 )
 
 const (
@@ -24,10 +26,32 @@ type Value struct {
 	Value int `xml:"value,attr"`
 }
 
+type Results struct {
+	Results    []Result `xml:"result"`
+	NumPlayers string   `xml:"numplayers,attr"`
+}
+
+type Result struct {
+	Level    int    `xml:"level,attr"`
+	Value    string `xml:"value,attr"`
+	NumVotes int    `xml:"numvotes,attr"`
+}
+
+type Poll struct {
+	Name    string    `xml:"name,attr"`
+	Results []Results `xml:"results"`
+}
+
+type Link struct {
+	Type  string `xml:"type,attr"`
+	ID    string `xml:"id,attr"`
+	Value string `xml:"value,attr"`
+}
+
 type Item struct {
 	GeekId        int    `xml:"id,attr"`
 	Thumbnail     string `xml:"thumbnail"`
-	Name          []Name `xml:"name"`
+	Names         []Name `xml:"name"`
 	YearPublished Value  `xml:"yearpublished"`
 	MinPlayers    Value  `xml:"minplayers"`
 	MaxPlayers    Value  `xml:"maxplayers"`
@@ -35,6 +59,8 @@ type Item struct {
 	MinPlayTime   Value  `xml:"minplaytime"`
 	MaxPlayTime   Value  `xml:"maxplaytime"`
 	MinAge        Value  `xml:"minage"`
+	Polls         []Poll `xml:"poll"`
+	Links         []Link `xml:"link"`
 }
 
 type Items struct {
@@ -104,28 +130,145 @@ func OnUserImport(c *gin.Context) {
 	}
 
 	// Get item info from geek if not exist in Hub's DB.
+	// for index, item := range items.Items {
+	// 	var dbItem db.item
+
+	// }
 
 	c.JSON(http.StatusOK, items)
 }
 
-func ReturnGeekInfo(c *gin.Context) {
-	id := c.PostForm("geekId")
+func getKoreanName(names []Name) string {
+	for _, name := range names {
+		info := whatlanggo.DetectLang(name.Value)
+		if info == whatlanggo.Kor {
+			return name.Value
+		}
+	}
+	return ""
+}
+
+func getBestNumPlayers(polls []Poll) (string, string, string) {
+	for _, poll := range polls {
+		if poll.Name != "suggested_numplayers" {
+			continue
+		}
+		bestVote := 0
+		bestVal := ""
+		recomVote := 0
+		recomVal := ""
+		notVote := 0
+		notVal := ""
+		for _, result := range poll.Results {
+			numVotes := 0
+			value := ""
+			for _, res := range result.Results {
+				if numVotes < res.NumVotes {
+					numVotes = res.NumVotes
+					value = res.Value
+				}
+			}
+			if value == "Best" {
+				if numVotes > bestVote {
+					bestVote = numVotes
+					bestVal = result.NumPlayers
+				}
+			} else if value == "Recommended" {
+				if numVotes > recomVote {
+					recomVote = numVotes
+					recomVal = result.NumPlayers
+				}
+			} else if value == "Not Recommended" {
+				if numVotes > notVote {
+					notVote = numVotes
+					notVal = result.NumPlayers
+				}
+			}
+		}
+		return bestVal, recomVal, notVal
+	}
+	return "", "", ""
+}
+
+func getLanguageDependency(polls []Poll) int {
+	for _, poll := range polls {
+		if poll.Name != "language_dependence" {
+			continue
+		}
+		vote := 0
+		level := 0
+		for _, result := range poll.Results {
+			for _, res := range result.Results {
+				if res.NumVotes > vote {
+					vote = res.NumVotes
+					level = res.Level
+				}
+			}
+		}
+		return level
+	}
+	return -1
+}
+
+func importItemInfoFromGeek(id string) (db.Item, error) {
+	var dbItem db.Item
+
 	res, err := http.Get("https://www.boardgamegeek.com/xmlapi2/thing?id=" + id)
 	if err != nil {
-		panic(err)
+		return dbItem, err
 	}
 	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		panic(err)
+		return dbItem, err
 	}
 
 	var items Items
 	xmlerr := xml.Unmarshal(data, &items)
 	if xmlerr != nil {
-		panic(err)
+		log.Println(xmlerr.Error())
+		return dbItem, err
 	}
 
-	c.JSON(http.StatusOK, items)
+	dbCon := db.Get()
+
+	for _, item := range items.Items {
+		dbItem.ID = uint(item.GeekId)
+		if dbCon.First(&dbItem).RecordNotFound() == false {
+			// The item already exists in Hub's DB.
+			log.Printf("Item (%s) already exists.", item.Names[0].Value)
+			// TODO: Implement item info update logic.
+			dbCon.First(&dbItem)
+			return dbItem, nil
+		}
+
+		dbItem.PrimaryName = item.Names[0].Value
+		dbItem.KoreanName = getKoreanName(item.Names)
+		dbItem.YearPublished = item.YearPublished.Value
+		dbItem.MinPlayers = item.MinPlayers.Value
+		dbItem.MaxPlayers = item.MaxPlayers.Value
+		dbItem.BestNumPlayers, dbItem.RecommendNumPlayers, dbItem.NotRecommendedNumPlayers = getBestNumPlayers(item.Polls)
+		dbItem.PlayingTime = item.PlayingTime.Value
+		dbItem.MinPlayingTime = item.MinPlayTime.Value
+		dbItem.MaxPlayingTime = item.MaxPlayTime.Value
+		dbItem.MinAge = item.MinAge.Value
+		dbItem.LanguageDependency = getLanguageDependency(item.Polls)
+
+		dbCon.Create(&dbItem)
+
+		// TODO: Implement import Links into Tags.
+	}
+
+	return dbItem, nil
+}
+
+func ReturnGeekInfo(c *gin.Context) {
+	id := c.PostForm("geekId")
+	item, err := importItemInfoFromGeek(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	c.JSON(http.StatusOK, item)
 }

@@ -29,7 +29,7 @@ func init() {
 	}
 
 	db.DB().SetMaxIdleConns(1)
-	db.DB().SetMaxOpenConns(10)
+	db.DB().SetMaxOpenConns(4)
 }
 
 func Get() *gorm.DB {

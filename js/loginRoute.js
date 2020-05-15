@@ -9,19 +9,13 @@ export default function LoginRoute(props) {
     return "/login?url=" + encodeURIComponent(props.location.pathname)
   }
 
-  function drawRoute() {
-    if (userInfo) {
-      return (
-        <Route exact path={props.path} component={props.component}/>
-      )
-    } else {
-      return (
-        <Redirect to={getLoginUri()}/>
-      )
-    }
+  if (userInfo) {
+    return (
+      <Route exact path={props.path} component={props.component}/>
+    )
+  } else {
+    return (
+      <Redirect to={getLoginUri()}/>
+    )
   }
-
-  return (
-    drawRoute()
-  )
 }
