@@ -2,11 +2,17 @@ package geek
 
 import (
 	"encoding/xml"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	maxRetryCount = 3
 )
 
 type Name struct {
@@ -55,26 +61,45 @@ type CollectionItems struct {
 	Items []CollectionItem `xml:"item"`
 }
 
-func OnUserImport(c *gin.Context) {
-	username := c.PostForm("inputGeekUsername")
+func callUserImportAPI(username string, retry int) (CollectionItems, error) {
+	var items CollectionItems
+
+	if retry >= maxRetryCount {
+		return items, errors.New("server error")
+	}
+
 	res, err := http.Get("https://www.boardgamegeek.com/xmlapi2/collection?username=" + username)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid username"})
-		return
+		return items, errors.New("boardgamegeek not responding")
 	}
 	defer res.Body.Close()
 
-	data, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "server error"})
-		return
+	if res.StatusCode == http.StatusAccepted {
+		// Geek Collection API가 최초 시도 이후에 다시 요청해야 정상 동작하는 부분이 있어 N번까지는 재시도한다.
+		log.Printf("Retrying import collection for user (%s), retry count = %d", username, retry+1)
+		time.Sleep(time.Second * 3) // 성능 이슈가 발생할 경우 별도 고루틴을 사용하는 방법을 찾아본다.
+		return callUserImportAPI(username, retry+1)
 	}
 
-	var items CollectionItems
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return items, errors.New("invalid response body")
+	}
+
 	xmlerr := xml.Unmarshal(data, &items)
 	if xmlerr != nil {
-		log.Println(xmlerr.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "server error"})
+		return items, errors.New("server error")
+	}
+
+	return items, nil
+}
+
+func OnUserImport(c *gin.Context) {
+	username := c.PostForm("inputGeekUsername")
+
+	items, err := callUserImportAPI(username, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
