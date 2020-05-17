@@ -147,7 +147,9 @@ func OnUserImport(c *gin.Context) {
 	user.Collections = user.Collections[:0]
 
 	// Get item info from geek if not exist in Hub's DB.
-	for _, item := range items.Items {
+	for i := 0; i < len(items.Items); i++ {
+		item := &items.Items[i]
+
 		if (item.Status.Own == 0) && (item.Status.PrevOwned == 0) && (item.Status.ForTrade == 0) && (item.Status.Want == 0) && (item.Status.WantToBuy == 0) && (item.Status.Wishlist == 0) && (item.Status.Preordered == 0) {
 			continue
 		}
@@ -290,6 +292,7 @@ func importItemInfoFromGeek(id int) (db.Item, error) {
 		return dbItem, err
 	}
 
+	// Items' size must be 1
 	for _, item := range items.Items {
 		// TODO: Upload image, create thumbnail and add the link to info.
 
@@ -348,6 +351,21 @@ func ReturnGeekInfo(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+	item, err := importItemInfoFromGeek(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	c.JSON(http.StatusOK, item)
+}
+
+func OnItemImport(c *gin.Context) {
+	idStr := c.PostForm("geekId")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+
 	item, err := importItemInfoFromGeek(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
