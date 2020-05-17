@@ -82,8 +82,11 @@ type ItemStatus struct {
 }
 
 type CollectionItem struct {
-	GeekID int        `xml:"objectid,attr"`
-	Status ItemStatus `xml:"status"`
+	GeekID    int        `xml:"objectid,attr"`
+	Thumbnail string     `xml:"thumbnail"`
+	Name      string     `xml:"name"`
+	Status    ItemStatus `xml:"status"`
+	IsExist   bool
 }
 
 type CollectionItems struct {
@@ -148,6 +151,11 @@ func OnUserImport(c *gin.Context) {
 		if (item.Status.Own == 0) && (item.Status.PrevOwned == 0) && (item.Status.ForTrade == 0) && (item.Status.Want == 0) && (item.Status.WantToBuy == 0) && (item.Status.Wishlist == 0) && (item.Status.Preordered == 0) {
 			continue
 		}
+
+		count := 0
+		dbCon.Model(&db.Item{}).Where("id = ?", item.GeekID).Count(&count)
+
+		item.IsExist = (count > 0)
 
 		var collection db.Collection
 		collection.ItemID = uint(item.GeekID)
