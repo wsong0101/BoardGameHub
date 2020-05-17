@@ -15,6 +15,14 @@ type Config struct {
 		User     string `yaml:"user"`
 		Password string `yaml:"password"`
 	} `yaml:"database"`
+
+	AWS struct {
+		S3Region    string `yaml:"s3Region"`
+		S3Id        string `yaml:"s3Id"`
+		S3SecretKey string `yaml:"s3SecretKey"`
+		S3Bucket    string `yaml:"s3Bucket"`
+		CDNURL      string `yaml:"cdnUrl"`
+	} `yaml:"aws"`
 }
 
 var cfg *Config = nil

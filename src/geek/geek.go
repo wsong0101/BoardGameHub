@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/abadojack/whatlanggo"
@@ -14,6 +15,7 @@ import (
 	"github.com/wsong0101/BoardGameHub/src/common"
 	"github.com/wsong0101/BoardGameHub/src/db"
 	"github.com/wsong0101/BoardGameHub/src/user"
+	"github.com/wsong0101/BoardGameHub/src/util"
 )
 
 const (
@@ -53,6 +55,7 @@ type Link struct {
 
 type Item struct {
 	GeekID        int    `xml:"id,attr"`
+	ImageURL      string `xml:"image"`
 	Thumbnail     string `xml:"thumbnail"`
 	Names         []Name `xml:"name"`
 	YearPublished Value  `xml:"yearpublished"`
@@ -146,7 +149,6 @@ func OnUserImport(c *gin.Context) {
 	dbCon.Model(&user).Association("Collections").Clear()
 	user.Collections = user.Collections[:0]
 
-	// Get item info from geek if not exist in Hub's DB.
 	for i := 0; i < len(items.Items); i++ {
 		item := &items.Items[i]
 
@@ -294,7 +296,10 @@ func importItemInfoFromGeek(id int) (db.Item, error) {
 
 	// Items' size must be 1
 	for _, item := range items.Items {
-		// TODO: Upload image, create thumbnail and add the link to info.
+		url, err := util.UploadToS3FromURL(item.ImageURL)
+		if err != nil {
+			log.Printf("Failed to upload image from url (%s)", item.ImageURL)
+		}
 
 		dbItem.PrimaryName = item.Names[0].Value
 		dbItem.KoreanName = getKoreanName(item.Names)
@@ -307,8 +312,8 @@ func importItemInfoFromGeek(id int) (db.Item, error) {
 		dbItem.MaxPlayingTime = item.MaxPlayTime.Value
 		dbItem.MinAge = item.MinAge.Value
 		dbItem.LanguageDependency = getLanguageDependency(item.Polls)
+		dbItem.Thumbnail = strings.Replace(url, "origin/", "300/", 1)
 
-		// TODO: Implement import Links into Tags.
 		for _, link := range item.Links {
 			var dbTag db.Tag
 			dbTag.ID = uint(link.ID)
