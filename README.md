@@ -12,4 +12,11 @@ database:
   database: "dbname"
   user: "dbuser"
   password: "dbpassword"
+
+aws:
+  s3Region: "ap-northeast-2"
+  s3Id: "secret id"
+  s3SecretKey: "secret key"
+  s3Bucket: "bucket name"
+  cdnUrl: "cdn url (or s3 bucket)"
 ```
