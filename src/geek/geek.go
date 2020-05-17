@@ -13,6 +13,7 @@ import (
 	"github.com/abadojack/whatlanggo"
 	"github.com/gin-gonic/gin"
 	"github.com/wsong0101/BoardGameHub/src/common"
+	"github.com/wsong0101/BoardGameHub/src/config"
 	"github.com/wsong0101/BoardGameHub/src/db"
 	"github.com/wsong0101/BoardGameHub/src/user"
 	"github.com/wsong0101/BoardGameHub/src/util"
@@ -89,7 +90,6 @@ type CollectionItem struct {
 	Thumbnail string     `xml:"thumbnail"`
 	Name      string     `xml:"name"`
 	Status    ItemStatus `xml:"status"`
-	IsExist   bool
 }
 
 type CollectionItems struct {
@@ -138,7 +138,7 @@ func OnUserImport(c *gin.Context) {
 		return
 	}
 
-	user, err := user.GetSessionUser(c)
+	dbUser, err := user.GetSessionUser(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -146,8 +146,10 @@ func OnUserImport(c *gin.Context) {
 
 	dbCon := db.Get()
 
-	dbCon.Model(&user).Association("Collections").Clear()
-	user.Collections = user.Collections[:0]
+	dbCon.Model(&dbUser).Association("Collections").Clear()
+	dbUser.Collections = dbUser.Collections[:0]
+
+	var collectionInfos []user.CollectionInfo
 
 	for i := 0; i < len(items.Items); i++ {
 		item := &items.Items[i]
@@ -156,13 +158,22 @@ func OnUserImport(c *gin.Context) {
 			continue
 		}
 
-		count := 0
-		dbCon.Model(&db.Item{}).Where("id = ?", item.GeekID).Count(&count)
+		cfg := config.Get().AWS
 
-		item.IsExist = (count > 0)
+		var dbItem db.Item
+		dbItem.ID = uint(item.GeekID)
+
+		isExist := false
+		if dbCon.First(&dbItem).RecordNotFound() == true {
+			dbItem.PrimaryName = item.Name
+			dbItem.Thumbnail = item.Thumbnail
+		} else {
+			dbItem.Thumbnail = cfg.CDNURL + "/" + dbItem.Thumbnail
+			isExist = true
+		}
 
 		var collection db.Collection
-		collection.ItemID = uint(item.GeekID)
+		collection.ItemID = dbItem.ID
 		collection.Own = item.Status.Own
 		collection.PrevOwned = item.Status.PrevOwned
 		collection.ForTrade = item.Status.ForTrade
@@ -177,10 +188,11 @@ func OnUserImport(c *gin.Context) {
 		}
 		collection.LastModified = t
 
-		user.Collections = append(user.Collections, collection)
+		dbUser.Collections = append(dbUser.Collections, collection)
+		collectionInfos = append(collectionInfos, user.CollectionInfo{Item: &dbItem, Status: &collection, IsExist: isExist})
 	}
 
-	dbCon.Save(&user)
+	dbCon.Save(&dbUser)
 
 	var collectionsToDelete []*db.Collection
 	dbCon.Where("user_id IS NULL").Find(&collectionsToDelete)
@@ -189,7 +201,7 @@ func OnUserImport(c *gin.Context) {
 		dbCon.Unscoped().Delete(&col)
 	}
 
-	c.JSON(http.StatusOK, items)
+	c.JSON(http.StatusOK, collectionInfos)
 }
 
 func getKoreanName(names []Name) string {

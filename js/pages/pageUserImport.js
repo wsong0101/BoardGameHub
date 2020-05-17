@@ -21,7 +21,7 @@ export default function UserImport() {
   ])
   const [err, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [items, setItems] = useState([])
+  const [collections, setCollections] = useState([])
 
   function handleChange(index, value, valid) {
     input[index].value = value
@@ -46,7 +46,7 @@ export default function UserImport() {
     setIsLoading(true)
     Axios.post("/user/import", form)
     .then(res => {
-      res.data.Items.sort((a, b) => {
+      res.data.sort((a, b) => {
         if (a.IsExist == b.IsExist) {
           return 0
         }
@@ -55,7 +55,7 @@ export default function UserImport() {
         }
         return -1
       })
-      setItems(res.data.Items)
+      setCollections(res.data)
       setIsLoading(false)
     })
     .catch( err => {
@@ -73,9 +73,9 @@ export default function UserImport() {
 
     Axios.post("/item/import", form)
     .then(res => {
-      let found = items.find(e => e.GeekID == geekId)
+      let found = collections.find(e => e.Item.ID == geekId)
       found.IsExist = true
-      setItems(items)
+      setCollections(collections)
       setIsLoading(false)
     })
     .catch(err => {
@@ -93,8 +93,8 @@ export default function UserImport() {
 
   function drawItems() {
     let countDisplay
-    if (items.length > 0) {
-      countDisplay =  <li className="list-group-item" key="0">{items.length} 개의 아이템을 가져왔습니다.</li>
+    if (collections.length > 0) {
+      countDisplay =  <li className="list-group-item" key="0">{collections.length} 개의 아이템을 가져왔습니다.</li>
     }
 
     function drawButton(geekId, isExist) {
@@ -116,37 +116,37 @@ export default function UserImport() {
       )
     }
 
-    function drawStatus(item) {
+    function drawStatus(status) {
       let buttons = []
-      if (item.Status.Own > 0) {
+      if (status.Own > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="0">Own</button>)
-      } else if (item.Status.PrevOwned > 0) {
+      } else if (status.PrevOwned > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="1">PrevOwned</button>)
-      } else if (item.Status.ForTrade > 0) {
+      } else if (status.ForTrade > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="2">ForTrade</button>)
-      } else if (item.Status.Want > 0) {
+      } else if (status.Want > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="3">Want</button>)
-      } else if (item.Status.WantToBuy > 0) {
+      } else if (status.WantToBuy > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="4">WantToBuy</button>)
-      } else if (item.Status.Wishlist > 0) {
+      } else if (status.Wishlist > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="5">Wishlist</button>)
-      } else if (item.Status.Preordered > 0) {
+      } else if (status.Preordered > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="6">Preordered</button>)
       }
       return buttons
     }
 
-    const listItems = items.map((item, index) =>
+    const listItems = collections.map((col, index) =>
       <li className="list-group-item" key={index + 1}>
         <div className="container">
           <div className="row">
             <div className="col-sm-1">{index + 1}</div>
-            <div className="col-sm-2"><img src={item.Thumbnail} className="img-thumbnail"/></div>
-            <div className="col-sm-2">{item.Name}</div>
+            <div className="col-sm-2"><img src={col.Item.Thumbnail} className="img-thumbnail"/></div>
+            <div className="col-sm-2">{col.Item.PrimaryName}</div>
             <div className="col-sm-4">
-              {drawStatus(item)}
+              {drawStatus(col.Status)}
             </div>
-            <div className="col-sm-3">{drawButton(item.GeekID, item.IsExist)}</div>
+            <div className="col-sm-3">{drawButton(col.Item.ID, col.IsExist)}</div>
           </div>
         </div>
       </li>

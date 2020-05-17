@@ -27,6 +27,12 @@ type LoginForm struct {
 	Password string `form:"inputPassword" binding:"required"`
 }
 
+type CollectionInfo struct {
+	Item    *db.Item
+	Status  *db.Collection
+	IsExist bool
+}
+
 func CreateUserFromInput(form RegisterForm) error {
 	ePassword, err := util.Ecrypt(form.Password)
 	if err != nil {
