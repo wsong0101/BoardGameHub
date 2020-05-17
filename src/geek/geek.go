@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/wsong0101/BoardGameHub/src/common"
 	"github.com/wsong0101/BoardGameHub/src/db"
+	"github.com/wsong0101/BoardGameHub/src/user"
 )
 
 const (
@@ -51,7 +52,7 @@ type Link struct {
 }
 
 type Item struct {
-	GeekId        int    `xml:"id,attr"`
+	GeekID        int    `xml:"id,attr"`
 	Thumbnail     string `xml:"thumbnail"`
 	Names         []Name `xml:"name"`
 	YearPublished Value  `xml:"yearpublished"`
@@ -71,7 +72,7 @@ type Items struct {
 
 type ItemStatus struct {
 	Own          int    `xml:"own,attr"`
-	PreOwned     int    `xml:"preowned,attr"`
+	PrevOwned    int    `xml:"prevowned,attr"`
 	ForTrade     int    `xml:"fortrade,attr"`
 	Want         int    `xml:"want,attr"`
 	WantToBuy    int    `xml:"wanttoplay,attr"`
@@ -81,7 +82,7 @@ type ItemStatus struct {
 }
 
 type CollectionItem struct {
-	GeekId int        `xml:"objectid,attr"`
+	GeekID int        `xml:"objectid,attr"`
 	Status ItemStatus `xml:"status"`
 }
 
@@ -131,11 +132,48 @@ func OnUserImport(c *gin.Context) {
 		return
 	}
 
-	// Get item info from geek if not exist in Hub's DB.
-	// for index, item := range items.Items {
-	// 	var dbItem db.item
+	user, err := user.GetSessionUser(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
 
-	// }
+	dbCon := db.Get()
+
+	dbCon.Model(&user).Association("Collections").Clear()
+	user.Collections = user.Collections[:0]
+
+	// Get item info from geek if not exist in Hub's DB.
+	for _, item := range items.Items {
+		if (item.Status.Own == 0) && (item.Status.PrevOwned == 0) && (item.Status.ForTrade == 0) && (item.Status.Want == 0) && (item.Status.WantToBuy == 0) && (item.Status.Wishlist == 0) && (item.Status.Preordered == 0) {
+			continue
+		}
+
+		var collection db.Collection
+		dbItem, err := importItemInfoFromGeek(item.GeekID)
+		if err != nil {
+			log.Printf("Failed to import item (%d) from geek.", item.GeekID)
+			continue
+		}
+		collection.ItemID = dbItem.ID
+		collection.Own = item.Status.Own
+		collection.PrevOwned = item.Status.PrevOwned
+		collection.ForTrade = item.Status.ForTrade
+		collection.Want = item.Status.Want
+		collection.WantToBuy = item.Status.WantToBuy
+		collection.Wishlist = item.Status.Wishlist
+		collection.Preordered = item.Status.Preordered
+
+		t, err := time.Parse("2006-01-02 15:04:05", item.Status.LastModified)
+		if err != nil {
+			t = time.Now()
+		}
+		collection.LastModified = t
+
+		user.Collections = append(user.Collections, collection)
+	}
+
+	dbCon.Save(&user)
 
 	c.JSON(http.StatusOK, items)
 }
