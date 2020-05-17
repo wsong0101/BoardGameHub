@@ -150,12 +150,7 @@ func OnUserImport(c *gin.Context) {
 		}
 
 		var collection db.Collection
-		dbItem, err := importItemInfoFromGeek(item.GeekID)
-		if err != nil {
-			log.Printf("Failed to import item (%d) from geek.", item.GeekID)
-			continue
-		}
-		collection.ItemID = dbItem.ID
+		collection.ItemID = uint(item.GeekID)
 		collection.Own = item.Status.Own
 		collection.PrevOwned = item.Status.PrevOwned
 		collection.ForTrade = item.Status.ForTrade
@@ -174,6 +169,13 @@ func OnUserImport(c *gin.Context) {
 	}
 
 	dbCon.Save(&user)
+
+	var collectionsToDelete []*db.Collection
+	dbCon.Where("user_id IS NULL").Find(&collectionsToDelete)
+	for _, col := range collectionsToDelete {
+		dbCon.Delete(&col)
+		dbCon.Unscoped().Delete(&col)
+	}
 
 	c.JSON(http.StatusOK, items)
 }
