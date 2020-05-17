@@ -11,9 +11,10 @@ type User struct {
 
 type Tag struct {
 	gorm.Model
-	TagType      int    `gorm:"index"`
-	PrimaryValue string `gorm:"type:varchar(100)"`
-	KoreanValue  string `gorm:"type:varchar(100);index"`
+	TagType      int     `gorm:"index"`
+	PrimaryValue string  `gorm:"type:varchar(100)"`
+	KoreanValue  string  `gorm:"type:varchar(100);index"`
+	Items        []*Item `gorm:"many2many:item_tags"`
 }
 
 type Item struct {
@@ -31,9 +32,12 @@ type Item struct {
 	MaxPlayingTime           int
 	MinAge                   int
 	LanguageDependency       int
+	Tags                     []*Tag  `gorm:"many2many:item_tags"`
+	Expansions               []*Item `gorm:"many2many:expansions;association_jointable_foreignkey:expansion_id;association_autoupdate:false"`
 }
 
 func init() {
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Item{})
+	db.AutoMigrate(&Tag{})
 }

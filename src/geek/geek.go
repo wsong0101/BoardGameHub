@@ -6,10 +6,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/abadojack/whatlanggo"
 	"github.com/gin-gonic/gin"
+	"github.com/wsong0101/BoardGameHub/src/common"
 	"github.com/wsong0101/BoardGameHub/src/db"
 )
 
@@ -44,7 +46,7 @@ type Poll struct {
 
 type Link struct {
 	Type  string `xml:"type,attr"`
-	ID    string `xml:"id,attr"`
+	ID    int    `xml:"id,attr"`
 	Value string `xml:"value,attr"`
 }
 
@@ -210,10 +212,19 @@ func getLanguageDependency(polls []Poll) int {
 	return -1
 }
 
-func importItemInfoFromGeek(id string) (db.Item, error) {
+func importItemInfoFromGeek(id int) (db.Item, error) {
 	var dbItem db.Item
+	dbItem.ID = uint(id)
 
-	res, err := http.Get("https://www.boardgamegeek.com/xmlapi2/thing?id=" + id)
+	dbCon := db.Get()
+	if dbCon.First(&dbItem).RecordNotFound() == false {
+		// The item already exists in Hub's DB.
+		log.Printf("Item (%s) already exists.", dbItem.PrimaryName)
+		// TODO: Implement item info update logic.
+		return dbItem, nil
+	}
+
+	res, err := http.Get("https://www.boardgamegeek.com/xmlapi2/thing?id=" + strconv.Itoa(id))
 	if err != nil {
 		return dbItem, err
 	}
@@ -231,17 +242,8 @@ func importItemInfoFromGeek(id string) (db.Item, error) {
 		return dbItem, err
 	}
 
-	dbCon := db.Get()
-
 	for _, item := range items.Items {
-		dbItem.ID = uint(item.GeekId)
-		if dbCon.First(&dbItem).RecordNotFound() == false {
-			// The item already exists in Hub's DB.
-			log.Printf("Item (%s) already exists.", item.Names[0].Value)
-			// TODO: Implement item info update logic.
-			dbCon.First(&dbItem)
-			return dbItem, nil
-		}
+		// TODO: Upload image, create thumbnail and add the link to info.
 
 		dbItem.PrimaryName = item.Names[0].Value
 		dbItem.KoreanName = getKoreanName(item.Names)
@@ -255,16 +257,49 @@ func importItemInfoFromGeek(id string) (db.Item, error) {
 		dbItem.MinAge = item.MinAge.Value
 		dbItem.LanguageDependency = getLanguageDependency(item.Polls)
 
+		// TODO: Implement import Links into Tags.
+		for _, link := range item.Links {
+			var dbTag db.Tag
+			dbTag.ID = uint(link.ID)
+			dbTag.PrimaryValue = link.Value
+
+			if link.Type == "boardgamecategory" {
+				dbTag.TagType = common.ItemCategory
+			} else if link.Type == "boardgamemechanic" {
+				dbTag.TagType = common.ItemMechanic
+			} else if link.Type == "boardgamedesigner" {
+				dbTag.TagType = common.ItemDesigner
+			} else if link.Type == "boardgameartist" {
+				dbTag.TagType = common.ItemArtist
+			}
+
+			if dbTag.TagType > 0 {
+				dbItem.Tags = append(dbItem.Tags, &dbTag)
+			}
+
+			if link.Type == "boardgameexpansion" {
+				var expansion db.Item
+				expansion.ID = uint(link.ID)
+				dbItem.Expansions = append(dbItem.Expansions, &expansion)
+			}
+		}
+
 		dbCon.Create(&dbItem)
 
-		// TODO: Implement import Links into Tags.
+		for _, expansion := range dbItem.Expansions {
+			importItemInfoFromGeek(int(expansion.ID))
+		}
 	}
 
 	return dbItem, nil
 }
 
 func ReturnGeekInfo(c *gin.Context) {
-	id := c.PostForm("geekId")
+	idStr := c.PostForm("geekId")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
 	item, err := importItemInfoFromGeek(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())

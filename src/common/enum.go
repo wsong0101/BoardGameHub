@@ -1,4 +1,4 @@
-package enum
+package common
 
 const (
 	ItemCategory = iota + 1
