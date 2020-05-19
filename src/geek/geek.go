@@ -367,10 +367,12 @@ func ReturnGeekInfo(c *gin.Context) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
+		return
 	}
 	item, err := importItemInfoFromGeek(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, item)
@@ -381,11 +383,13 @@ func OnItemImport(c *gin.Context) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	item, err := importItemInfoFromGeek(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, item)

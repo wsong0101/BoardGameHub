@@ -1,14 +1,10 @@
 import React, {useState} from 'react'
-import {useLocation, useHistory} from 'react-router-dom'
 import Axios from 'axios'
 import Checker from '../util/InputChecker'
 import InputText from '../input/InputText'
 import DisplayNotice from '../common/displayNotice'
 
 export default function UserImport() {
-  let query = new URLSearchParams(useLocation().search)
-  let history = useHistory()
-
   const [input, setInput] = useState([
     {
       "name": "inputGeekUsername",
