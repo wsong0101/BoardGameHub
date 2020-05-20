@@ -189,7 +189,23 @@ func OnUserImport(c *gin.Context) {
 		collection.LastModified = t
 
 		dbUser.Collections = append(dbUser.Collections, collection)
-		collectionInfos = append(collectionInfos, user.CollectionInfo{Item: &dbItem, Status: &collection, IsExist: isExist})
+
+		collectionInfo := user.CollectionInfo{
+			ID:          dbItem.ID,
+			PrimaryName: dbItem.PrimaryName,
+			Thumbnail:   dbItem.Thumbnail,
+			Status: user.ItemStatus{
+				Own:        collection.Own,
+				PrevOwned:  collection.PrevOwned,
+				ForTrade:   collection.ForTrade,
+				Want:       collection.Want,
+				WantToBuy:  collection.WantToBuy,
+				Wishlist:   collection.Wishlist,
+				Preordered: collection.Preordered,
+			},
+			IsExistInDB: isExist,
+		}
+		collectionInfos = append(collectionInfos, collectionInfo)
 	}
 
 	dbCon.Save(&dbUser)

@@ -82,9 +82,9 @@ export default function UserCollection(props) {
             <div className="col-sm-2"><img src={elem.Thumbnail} className="img-thumbnail"/></div>
             <div className="col-sm-2">{elem.PrimaryName}</div>
             <div className="col-sm-4">
-              {/* {drawStatus(elem.Status)} */}
+              {drawStatus(elem.Status)}
             </div>
-            <div className="col-sm-3">{drawButton(elem.ID, false)}</div>
+            <div className="col-sm-3">{drawButton(elem.ID, elem.IsExistInDB)}</div>
           </div>
         </div>
       </li>

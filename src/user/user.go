@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/wsong0101/BoardGameHub/src/config"
 	"github.com/wsong0101/BoardGameHub/src/db"
 	"github.com/wsong0101/BoardGameHub/src/util"
 )
@@ -27,10 +28,23 @@ type LoginForm struct {
 	Password string `form:"inputPassword" binding:"required"`
 }
 
+type ItemStatus struct {
+	Own        int
+	PrevOwned  int
+	ForTrade   int
+	Want       int
+	WantToBuy  int
+	Wishlist   int
+	Preordered int
+}
+
 type CollectionInfo struct {
-	Item    *db.Item
-	Status  *db.Collection
-	IsExist bool
+	ID          uint
+	PrimaryName string
+	KoreanName  string
+	Thumbnail   string
+	Status      ItemStatus
+	IsExistInDB bool
 }
 
 func CreateUserFromInput(form RegisterForm) error {
@@ -102,4 +116,60 @@ func Logout(c *gin.Context) error {
 	session := sessions.Default(c)
 	session.Delete(userkey)
 	return session.Save()
+}
+
+func GetCollection(userID uint, nickname *string) ([]CollectionInfo, error) {
+	var infos []CollectionInfo
+
+	dbCon := db.Get()
+
+	var user db.User
+	user.ID = userID
+
+	if err := dbCon.First(&user).Error; err != nil {
+		return infos, err
+	}
+
+	if err := dbCon.Model(&user).Related(&user.Collections).Error; err != nil {
+		return infos, err
+	}
+
+	var itemIDs []uint
+	statusMap := make(map[uint]ItemStatus)
+	for _, col := range user.Collections {
+		itemIDs = append(itemIDs, col.ItemID)
+		statusMap[col.ItemID] = ItemStatus{
+			Own:        col.Own,
+			PrevOwned:  col.PrevOwned,
+			ForTrade:   col.ForTrade,
+			Want:       col.Want,
+			WantToBuy:  col.WantToBuy,
+			Wishlist:   col.Wishlist,
+			Preordered: col.Preordered,
+		}
+	}
+
+	var items []db.Item
+	if err := dbCon.Where("ID IN (?)", itemIDs).Find(&items).Select("id, primary_name, korean_name, thumbnail").Error; err != nil {
+		return infos, err
+	}
+
+	cfg := config.Get().AWS
+
+	for _, item := range items {
+		infos = append(infos, CollectionInfo{
+			ID:          item.ID,
+			PrimaryName: item.PrimaryName,
+			KoreanName:  item.KoreanName,
+			Thumbnail:   cfg.CDNURL + "/" + item.Thumbnail,
+			Status:      statusMap[item.ID],
+			IsExistInDB: true,
+		})
+	}
+
+	if nickname != nil {
+		*nickname = user.Nickname
+	}
+
+	return infos, nil
 }

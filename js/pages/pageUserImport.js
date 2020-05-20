@@ -43,10 +43,10 @@ export default function UserImport() {
     Axios.post("/user/import", form)
     .then(res => {
       res.data.sort((a, b) => {
-        if (a.IsExist == b.IsExist) {
+        if (a.IsExistInDB == b.IsExistInDB) {
           return 0
         }
-        if (a.IsExist) {
+        if (a.IsExistInDB) {
           return 1
         }
         return -1
@@ -69,8 +69,8 @@ export default function UserImport() {
 
     Axios.post("/item/import", form)
     .then(res => {
-      let found = collections.find(e => e.Item.ID == geekId)
-      found.IsExist = true
+      let found = collections.find(e => e.ID == geekId)
+      found.IsExistInDB = true
       setCollections(collections)
       setIsLoading(false)
     })
@@ -137,12 +137,12 @@ export default function UserImport() {
         <div className="container">
           <div className="row">
             <div className="col-sm-1">{index + 1}</div>
-            <div className="col-sm-2"><img src={col.Item.Thumbnail} className="img-thumbnail"/></div>
-            <div className="col-sm-2">{col.Item.PrimaryName}</div>
+            <div className="col-sm-2"><img src={col.Thumbnail} className="img-thumbnail"/></div>
+            <div className="col-sm-2">{col.PrimaryName}</div>
             <div className="col-sm-4">
               {drawStatus(col.Status)}
             </div>
-            <div className="col-sm-3">{drawButton(col.Item.ID, col.IsExist)}</div>
+            <div className="col-sm-3">{drawButton(col.ID, col.IsExistInDB)}</div>
           </div>
         </div>
       </li>
