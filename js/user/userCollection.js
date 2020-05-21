@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import './UserCollection.css'
 
 export default function UserCollection(props) {
   const [isLoading, setIsLoading] = useState(false)
@@ -74,27 +75,38 @@ export default function UserCollection(props) {
       return buttons
     }
 
+    const showName = (elem) => {
+      if (elem.KoreanName != "") {
+        return (
+          elem.KoreanName
+        )
+      }
+      return (
+        elem.PrimaryName
+      )
+    }
+
     const listItems = props.collection.map((elem, index) =>
-      <li className="list-group-item" key={index + 1}>
-        <div className="container">
-          <div className="row">
-            <div className="col-sm-1">{index + 1}</div>
-            <div className="col-sm-2"><img src={elem.Thumbnail} className="img-thumbnail"/></div>
-            <div className="col-sm-2">{elem.PrimaryName}</div>
-            <div className="col-sm-4">
+      <div className="col-6 col-sm-4 col-md-3 col-lg-2 px-1 py-2" key={index + 1}>
+        <div className="h-100 border rounded d-flex flex-column justify-content-center">
+          <div className="card-img-div flex-grow-1 d-flex flex-column justify-content-center">
+            <img src={elem.Thumbnail} className="card-img rounded-top"/>
+          </div>
+          <div className="p-2 flex-grow-0">
+            <h6 className=""><b>{showName(elem)}</b></h6>
+            <p className="">
               {drawStatus(elem.Status)}
-            </div>
-            <div className="col-sm-3">{drawButton(elem.ID, elem.IsExistInDB)}</div>
+            </p>
           </div>
         </div>
-      </li>
+      </div>
     )
 
+
     return (
-      <ul className="list-group mt-3">
-        {countDisplay}
-        {listItems}
-      </ul>
+      <div className="row">
+          {listItems}
+      </div>
     )
   }
 
