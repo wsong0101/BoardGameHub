@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom'
 import Axios from 'axios'
 import UserCollection from '../user/userCollection'
 import DisplayNotice from '../common/displayNotice'
+import { useAuth } from '../util/context'
 
 export default function PageUserCollection() {
   let location = useLocation()
@@ -12,6 +13,9 @@ export default function PageUserCollection() {
   const [nickname, setNickname] = useState("")
   const [counts, setCounts] = useState([])
   const [collection, setCollection] = useState([])
+
+  const { userInfo } = useAuth();
+  const isMe = (userInfo && nickname == userInfo.nickname)
 
   useEffect(() => {
     Axios.post(location.pathname + "/1")
@@ -48,10 +52,19 @@ export default function PageUserCollection() {
       {drawButton("preordered", "선주문", counts.Preordered)}
     </ul>
 
+  let drawImportButton
+  if (isMe) {
+    drawImportButton  = <Link className="btn btn-warning ml-auto" to="/user/import">BGG Collection 가져오기</Link>
+  }
+  
+
   return (
     <div className="content py-4 px-3">
         <DisplayNotice content={err} />
-        <h4>{nickname}님의 책장</h4>   
+        <h4 className="d-flex justify-content-between">
+          {nickname}님의 책장
+          {drawImportButton}
+        </h4>
         <div className="pt-2">
           {drawNavigation}
           <UserCollection collection={collection} />

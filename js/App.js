@@ -64,7 +64,6 @@ export default function App(props) {
               </a>
               <div className="dropdown-menu" aria-labelledby="userMenuButton">
                 <Link className="dropdown-item" to={"/user/collection/" + userInfo.id + "/own"}>내 책장</Link>
-                <Link className="dropdown-item" to="/user/import">Collection 가져오기</Link>
               </div>
             </div>
           </li>
