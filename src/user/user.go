@@ -118,25 +118,70 @@ func Logout(c *gin.Context) error {
 	return session.Save()
 }
 
-func GetCollection(userID uint, nickname *string) ([]CollectionInfo, error) {
+func GetNickname(ID uint) string {
+	dbCon := db.Get()
+
+	var user db.User
+	user.ID = ID
+
+	if err := dbCon.First(&user).Error; err != nil {
+		return ""
+	}
+
+	return user.Nickname
+}
+
+func GetCollectionCount(userID uint) (ItemStatus, error) {
+	var collections []db.Collection
+	var counts ItemStatus
+
+	dbCon := db.Get()
+	if err := dbCon.Where("user_id = ?", userID).Find(&collections).Error; err != nil {
+		return counts, err
+	}
+
+	for _, col := range collections {
+		if col.Own > 0 {
+			counts.Own += 1
+		}
+		if col.PrevOwned > 0 {
+			counts.PrevOwned += 1
+		}
+		if col.ForTrade > 0 {
+			counts.ForTrade += 1
+		}
+		if col.Want > 0 {
+			counts.Want += 1
+		}
+		if col.WantToBuy > 0 {
+			counts.WantToBuy += 1
+		}
+		if col.Wishlist > 0 {
+			counts.Wishlist += 1
+		}
+		if col.Preordered > 0 {
+			counts.Preordered += 1
+		}
+	}
+
+	return counts, nil
+}
+
+func GetCollection(userID uint, category string, page int) ([]CollectionInfo, error) {
 	var infos []CollectionInfo
 
 	dbCon := db.Get()
 
-	var user db.User
-	user.ID = userID
+	query := " AND " + category + " = 1"
 
-	if err := dbCon.First(&user).Error; err != nil {
-		return infos, err
-	}
-
-	if err := dbCon.Model(&user).Related(&user.Collections).Error; err != nil {
+	var collections []db.Collection
+	if err := dbCon.Where("user_id = ?"+query, userID).Offset((page - 1) * 50).Limit(50).Find(&collections).Error; err != nil {
 		return infos, err
 	}
 
 	var itemIDs []uint
 	statusMap := make(map[uint]ItemStatus)
-	for _, col := range user.Collections {
+	for _, col := range collections {
 		itemIDs = append(itemIDs, col.ItemID)
 		statusMap[col.ItemID] = ItemStatus{
 			Own:        col.Own,
@@ -165,10 +210,6 @@ func GetCollection(userID uint, nickname *string) ([]CollectionInfo, error) {
 			Status:      statusMap[item.ID],
 			IsExistInDB: true,
 		})
-	}
-
-	if nickname != nil {
-		*nickname = user.Nickname
 	}
 
 	return infos, nil

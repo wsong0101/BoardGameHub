@@ -63,7 +63,7 @@ export default function App(props) {
                   Welcome! {userInfo.nickname}
               </a>
               <div className="dropdown-menu" aria-labelledby="userMenuButton">
-                <Link className="dropdown-item" to={"/user/collection/" + userInfo.id}>내 책장</Link>
+                <Link className="dropdown-item" to={"/user/collection/" + userInfo.id + "/own"}>내 책장</Link>
                 <Link className="dropdown-item" to="/user/import">Collection 가져오기</Link>
               </div>
             </div>
@@ -98,7 +98,7 @@ export default function App(props) {
               <Route exact path="/" component={Main} />
               <Route exact path="/register" component={PageRegister} />
               <Route exact path="/login" component={PageLogin} />
-              <Route exact path="/user/collection/:id" component={PageUserCollection} />
+              <Route path="/user/collection/:id" component={PageUserCollection} />
               <LoginRoute exact path="/user/import" component={PageUserImport} />
               <LoginRoute exact path="/item/create" component={ItemCreate} />
           </Switch>

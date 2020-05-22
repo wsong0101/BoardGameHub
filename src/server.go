@@ -24,7 +24,7 @@ func main() {
 	r.GET("/register", returnApp)
 	r.GET("/login", returnApp)
 	r.GET("/user/import", returnApp)
-	r.GET("/user/collection/:id", returnApp)
+	r.GET("/user/collection/:id/*category", returnApp)
 	r.GET("/item/create", returnApp)
 
 	loginAuth := r.Group("/")
@@ -35,7 +35,7 @@ func main() {
 	loginAuth.POST("/logout", handler.OnLogout)
 	r.POST("/session/user", handler.OnSessionUser)
 	loginAuth.POST("/user/import", geek.OnUserImport)
-	r.POST("/user/collection/:id", handler.OnUserCollection)
+	r.POST("/user/collection/:id/:category/:page", handler.OnUserCollection)
 	loginAuth.POST("/item/import", geek.OnItemImport)
 	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)
 
