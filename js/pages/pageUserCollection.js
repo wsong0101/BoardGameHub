@@ -55,8 +55,7 @@ export default function PageUserCollection() {
   let drawImportButton
   if (isMe) {
     drawImportButton  = <Link className="btn btn-warning ml-auto" to="/user/import">BGG Collection 가져오기</Link>
-  }
-  
+  }  
 
   return (
     <div className="content py-4 px-3">
@@ -67,7 +66,7 @@ export default function PageUserCollection() {
         </h4>
         <div className="pt-2">
           {drawNavigation}
-          <UserCollection collection={collection} />
+          <UserCollection collection={collection} isMe={isMe}/>
         </div>
     </div>
   )
