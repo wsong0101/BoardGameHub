@@ -38,6 +38,7 @@ func main() {
 	r.POST("/user/collection/:id/:category/:page", handler.OnUserCollection)
 	loginAuth.POST("/item/import", geek.OnItemImport)
 	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)
+	r.POST("/item/info/:id", handler.OnItem)
 
 	r.Static("/dist", "../dist")
 
