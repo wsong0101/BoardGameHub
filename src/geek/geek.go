@@ -191,15 +191,13 @@ func OnUserImport(c *gin.Context) {
 			ID:          dbItem.ID,
 			PrimaryName: dbItem.PrimaryName,
 			Thumbnail:   dbItem.Thumbnail,
-			Status: user.ItemStatus{
-				Own:        collection.Own,
-				PrevOwned:  collection.PrevOwned,
-				ForTrade:   collection.ForTrade,
-				Want:       collection.Want,
-				WantToBuy:  collection.WantToBuy,
-				Wishlist:   collection.Wishlist,
-				Preordered: collection.Preordered,
-			},
+			Own:         collection.Own,
+			PrevOwned:   collection.PrevOwned,
+			ForTrade:    collection.ForTrade,
+			Want:        collection.Want,
+			WantToBuy:   collection.WantToBuy,
+			Wishlist:    collection.Wishlist,
+			Preordered:  collection.Preordered,
 			IsExistInDB: isExist,
 		}
 		collectionInfos = append(collectionInfos, collectionInfo)

@@ -112,21 +112,21 @@ export default function UserImport() {
       )
     }
 
-    function drawStatus(status) {
+    function drawStatus(col) {
       let buttons = []
-      if (status.Own > 0) {
+      if (col.Own > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="0">Own</button>)
-      } else if (status.PrevOwned > 0) {
+      } else if (col.PrevOwned > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="1">PrevOwned</button>)
-      } else if (status.ForTrade > 0) {
+      } else if (col.ForTrade > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="2">ForTrade</button>)
-      } else if (status.Want > 0) {
+      } else if (col.Want > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="3">Want</button>)
-      } else if (status.WantToBuy > 0) {
+      } else if (col.WantToBuy > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="4">WantToBuy</button>)
-      } else if (status.Wishlist > 0) {
+      } else if (col.Wishlist > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="5">Wishlist</button>)
-      } else if (status.Preordered > 0) {
+      } else if (col.Preordered > 0) {
         buttons.push(<button type="button" className="btn btn-secondary mr-1 mt-1" key="6">Preordered</button>)
       }
       return buttons
@@ -140,7 +140,7 @@ export default function UserImport() {
             <div className="col-sm-2"><img src={col.Thumbnail} className="img-thumbnail"/></div>
             <div className="col-sm-2">{col.PrimaryName}</div>
             <div className="col-sm-4">
-              {drawStatus(col.Status)}
+              {drawStatus(col)}
             </div>
             <div className="col-sm-3">{drawButton(col.ID, col.IsExistInDB)}</div>
           </div>

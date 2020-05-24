@@ -27,7 +27,7 @@ type LoginForm struct {
 	Password string `form:"inputPassword" binding:"required"`
 }
 
-type ItemStatus struct {
+type CollectionCounts struct {
 	Own        int
 	PrevOwned  int
 	ForTrade   int
@@ -42,7 +42,13 @@ type CollectionInfo struct {
 	PrimaryName string
 	KoreanName  string
 	Thumbnail   string
-	Status      ItemStatus
+	Own         int
+	PrevOwned   int
+	ForTrade    int
+	Want        int
+	WantToBuy   int
+	Wishlist    int
+	Preordered  int
 	Score       int
 	Memo        string
 	IsExistInDB bool
@@ -132,9 +138,9 @@ func GetNickname(ID uint) string {
 	return user.Nickname
 }
 
-func GetCollectionCount(userID uint) (ItemStatus, error) {
+func GetCollectionCount(userID uint) (CollectionCounts, error) {
 	var collections []db.Collection
-	var counts ItemStatus
+	var counts CollectionCounts
 
 	dbCon := db.Get()
 	if err := dbCon.Where("user_id = ?", userID).Find(&collections).Error; err != nil {
@@ -181,22 +187,10 @@ func GetCollection(userID uint, category string, page int) ([]CollectionInfo, er
 	}
 
 	var itemIDs []uint
-	statusMap := make(map[uint]ItemStatus)
-	scoreMap := make(map[uint]int)
-	memoMap := make(map[uint]string)
+	idCollectionMap := make(map[uint]db.Collection)
 	for _, col := range collections {
 		itemIDs = append(itemIDs, col.ItemID)
-		statusMap[col.ItemID] = ItemStatus{
-			Own:        col.Own,
-			PrevOwned:  col.PrevOwned,
-			ForTrade:   col.ForTrade,
-			Want:       col.Want,
-			WantToBuy:  col.WantToBuy,
-			Wishlist:   col.Wishlist,
-			Preordered: col.Preordered,
-		}
-		scoreMap[col.ItemID] = col.Score
-		memoMap[col.ItemID] = col.Memo
+		idCollectionMap[col.ItemID] = col
 	}
 
 	var items []db.Item
@@ -205,17 +199,37 @@ func GetCollection(userID uint, category string, page int) ([]CollectionInfo, er
 	}
 
 	for _, item := range items {
+		col := idCollectionMap[item.ID]
+
 		infos = append(infos, CollectionInfo{
 			ID:          item.ID,
 			PrimaryName: item.PrimaryName,
 			KoreanName:  item.KoreanName,
 			Thumbnail:   util.GetURL(item.Thumbnail),
-			Status:      statusMap[item.ID],
-			Score:       scoreMap[item.ID],
-			Memo:        memoMap[item.ID],
+			Own:         col.Own,
+			PrevOwned:   col.PrevOwned,
+			ForTrade:    col.ForTrade,
+			Want:        col.Want,
+			WantToBuy:   col.WantToBuy,
+			Wishlist:    col.Wishlist,
+			Preordered:  col.Preordered,
+			Score:       col.Score,
+			Memo:        col.Memo,
 			IsExistInDB: true,
 		})
 	}
 
 	return infos, nil
+}
+
+func GetItemCollection(userID uint, itemID uint) (db.Collection, error) {
+	var info db.Collection
+
+	dbCon := db.Get()
+
+	if err := dbCon.Where("user_id = ? AND item_id = ?", userID, itemID).First(&info).Error; err != nil {
+		return info, err
+	}
+
+	return info, nil
 }

@@ -4,6 +4,7 @@ import Axios from 'axios'
 import UserCollection from '../user/userCollection'
 import DisplayNotice from '../common/displayNotice'
 import { useAuth } from '../util/context'
+import Util from '../util/util'
 
 export default function PageUserCollection() {
   let location = useLocation()
@@ -68,35 +69,7 @@ export default function PageUserCollection() {
       let copy = [...collection]
       let found = copy.find(e => e.ID == id)
 
-      switch (type) {
-        case "score":
-          found.Score = value
-          break;
-        case "own":
-          found.Status.Own = found.Status.Own == 0 ? 1 : 0
-          break;
-        case "prev_owned":
-          found.Status.PrevOwned = found.Status.PrevOwned == 0 ? 1 : 0
-          break;
-        case "for_trade":
-          found.Status.ForTrade = found.Status.ForTrade == 0 ? 1 : 0
-          break;
-        case "want":
-          found.Status.Want = found.Status.Want == 0 ? 1 : 0
-          break;
-        case "want_to_buy":
-          found.Status.WantToBuy = found.Status.WantToBuy == 0 ? 1 : 0
-          break;
-        case "wishlist":
-          found.Status.Wishlist = found.Status.Wishlist == 0 ? 1 : 0
-          break;
-        case "preordered":
-          found.Status.Preordered = found.Status.Preordered == 0 ? 1 : 0
-          break;
-        case "memo":
-          found.Memo = value
-          break;
-      }
+      Util.setStatusByType(type, found, value)
 
       setCollection(copy)
       setUpdateErr("")
