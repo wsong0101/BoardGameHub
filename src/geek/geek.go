@@ -13,7 +13,6 @@ import (
 	"github.com/abadojack/whatlanggo"
 	"github.com/gin-gonic/gin"
 	"github.com/wsong0101/BoardGameHub/src/common"
-	"github.com/wsong0101/BoardGameHub/src/config"
 	"github.com/wsong0101/BoardGameHub/src/db"
 	"github.com/wsong0101/BoardGameHub/src/user"
 	"github.com/wsong0101/BoardGameHub/src/util"
@@ -158,8 +157,6 @@ func OnUserImport(c *gin.Context) {
 			continue
 		}
 
-		cfg := config.Get().AWS
-
 		var dbItem db.Item
 		dbItem.ID = uint(item.GeekID)
 
@@ -168,7 +165,7 @@ func OnUserImport(c *gin.Context) {
 			dbItem.PrimaryName = item.Name
 			dbItem.Thumbnail = item.Thumbnail
 		} else {
-			dbItem.Thumbnail = cfg.CDNURL + "/" + dbItem.Thumbnail
+			dbItem.Thumbnail = util.GetURL(dbItem.Thumbnail)
 			isExist = true
 		}
 

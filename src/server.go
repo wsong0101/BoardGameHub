@@ -26,6 +26,7 @@ func main() {
 	r.GET("/user/import", returnApp)
 	r.GET("/user/collection/:id/*category", returnApp)
 	r.GET("/item/create", returnApp)
+	r.GET("/item/info/:id", returnApp)
 
 	loginAuth := r.Group("/")
 	loginAuth.Use(AuthRequired)

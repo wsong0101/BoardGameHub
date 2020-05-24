@@ -9,6 +9,7 @@ import PageRegister from './pages/PageRegister'
 import PageLogin from './pages/PageLogin'
 import PageUserImport from './pages/pageUserImport'
 import PageUserCollection from './pages/pageUserCollection'
+import PageItemInfo from './pages/pageItemInfo'
 import ItemCreate from './pages/ItemCreate'
 import Axios from 'axios'
 
@@ -98,6 +99,7 @@ export default function App(props) {
               <Route exact path="/register" component={PageRegister} />
               <Route exact path="/login" component={PageLogin} />
               <Route path="/user/collection/:id" component={PageUserCollection} />
+              <Route path="/item/:id" component={PageItemInfo} />
               <LoginRoute exact path="/user/import" component={PageUserImport} />
               <LoginRoute exact path="/item/create" component={ItemCreate} />
           </Switch>

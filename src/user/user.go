@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/wsong0101/BoardGameHub/src/config"
 	"github.com/wsong0101/BoardGameHub/src/db"
 	"github.com/wsong0101/BoardGameHub/src/util"
 )
@@ -205,14 +204,12 @@ func GetCollection(userID uint, category string, page int) ([]CollectionInfo, er
 		return infos, err
 	}
 
-	cfg := config.Get().AWS
-
 	for _, item := range items {
 		infos = append(infos, CollectionInfo{
 			ID:          item.ID,
 			PrimaryName: item.PrimaryName,
 			KoreanName:  item.KoreanName,
-			Thumbnail:   cfg.CDNURL + "/" + item.Thumbnail,
+			Thumbnail:   util.GetURL(item.Thumbnail),
 			Status:      statusMap[item.ID],
 			Score:       scoreMap[item.ID],
 			Memo:        memoMap[item.ID],

@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react'
+import { Link } from 'react-router-dom'
 import DisplayNotice from '../common/displayNotice'
-import './UserCollection.css'
+import Util from '../util/util'
 import Axios from 'axios'
+import './UserCollection.css'
 
 export default function UserCollection(props) {
   const [select, setSelect] = useState({})
@@ -18,17 +20,6 @@ export default function UserCollection(props) {
 
   const updateMemo = (e) => {
     setMemo(e.target.value)
-  }
-
-  const getName = (elem) => {
-    if (elem.KoreanName != "") {
-      return (
-        elem.KoreanName
-      )
-    }
-    return (
-      elem.PrimaryName
-    )
   }
 
   const showStars = (score) => {
@@ -85,7 +76,9 @@ export default function UserCollection(props) {
         <div className="col-6 col-sm-4 col-md-3 col-lg-2 px-1 py-2" key={index + 1}>
           <div className="h-100 border rounded d-flex flex-column justify-content-center">
             <div className="card-img-div flex-grow-1 d-flex flex-column justify-content-center p-1">
-              <img src={elem.Thumbnail} className="card-img rounded-top"/>
+              <Link to={"/item/info/"+elem.ID} className="card-img">
+                <img src={elem.Thumbnail} className="card-img rounded-top"/>
+              </Link>
             </div>
             <div className="p-2 flex-grow-0">
               <div className="star">
@@ -93,7 +86,7 @@ export default function UserCollection(props) {
                 {showStars(elem.Score)}
               </div>
               <div className="pt-2 d-flex justify-content-between">
-                {getName(elem)}
+                {Util.getName(elem)}
                 {showCog(elem)}
               </div>
             </div>
@@ -108,7 +101,7 @@ export default function UserCollection(props) {
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5>{getName(select)}</h5>
+            <h5>{Util.getName(select)}</h5>
           </div>
           <div className="modal-body">
             <div className="row">
@@ -177,7 +170,7 @@ export default function UserCollection(props) {
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5>{getName(select)}</h5>
+            <h5>{Util.getName(select)}</h5>
           </div>
           <div className="modal-body">
             <DisplayNotice content={props.updateErr} />
