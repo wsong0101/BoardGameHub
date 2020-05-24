@@ -25,6 +25,8 @@ type Collection struct {
 	WantToBuy    int
 	Wishlist     int
 	Preordered   int
+	Score        int
+	Memo         string
 	LastModified time.Time
 }
 

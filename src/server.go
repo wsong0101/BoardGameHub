@@ -34,8 +34,11 @@ func main() {
 	r.POST("/login", handler.OnLogin)
 	loginAuth.POST("/logout", handler.OnLogout)
 	r.POST("/session/user", handler.OnSessionUser)
+
 	loginAuth.POST("/user/import", geek.OnUserImport)
 	r.POST("/user/collection/:id/:category/:page", handler.OnUserCollection)
+	loginAuth.PUT("/user/collection/:id/:type", handler.OnCollectionUpdate)
+
 	loginAuth.POST("/item/import", geek.OnItemImport)
 	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)
 	r.POST("/item/info/:id", handler.OnItem)

@@ -44,6 +44,8 @@ type CollectionInfo struct {
 	KoreanName  string
 	Thumbnail   string
 	Status      ItemStatus
+	Score       int
+	Memo        string
 	IsExistInDB bool
 }
 
@@ -142,25 +144,25 @@ func GetCollectionCount(userID uint) (ItemStatus, error) {
 
 	for _, col := range collections {
 		if col.Own > 0 {
-			counts.Own += 1
+			counts.Own++
 		}
 		if col.PrevOwned > 0 {
-			counts.PrevOwned += 1
+			counts.PrevOwned++
 		}
 		if col.ForTrade > 0 {
-			counts.ForTrade += 1
+			counts.ForTrade++
 		}
 		if col.Want > 0 {
-			counts.Want += 1
+			counts.Want++
 		}
 		if col.WantToBuy > 0 {
-			counts.WantToBuy += 1
+			counts.WantToBuy++
 		}
 		if col.Wishlist > 0 {
-			counts.Wishlist += 1
+			counts.Wishlist++
 		}
 		if col.Preordered > 0 {
-			counts.Preordered += 1
+			counts.Preordered++
 		}
 	}
 
@@ -181,6 +183,8 @@ func GetCollection(userID uint, category string, page int) ([]CollectionInfo, er
 
 	var itemIDs []uint
 	statusMap := make(map[uint]ItemStatus)
+	scoreMap := make(map[uint]int)
+	memoMap := make(map[uint]string)
 	for _, col := range collections {
 		itemIDs = append(itemIDs, col.ItemID)
 		statusMap[col.ItemID] = ItemStatus{
@@ -192,6 +196,8 @@ func GetCollection(userID uint, category string, page int) ([]CollectionInfo, er
 			Wishlist:   col.Wishlist,
 			Preordered: col.Preordered,
 		}
+		scoreMap[col.ItemID] = col.Score
+		memoMap[col.ItemID] = col.Memo
 	}
 
 	var items []db.Item
@@ -208,6 +214,8 @@ func GetCollection(userID uint, category string, page int) ([]CollectionInfo, er
 			KoreanName:  item.KoreanName,
 			Thumbnail:   cfg.CDNURL + "/" + item.Thumbnail,
 			Status:      statusMap[item.ID],
+			Score:       scoreMap[item.ID],
+			Memo:        memoMap[item.ID],
 			IsExistInDB: true,
 		})
 	}
