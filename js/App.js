@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import LoginRoute from './loginRoute'
 import Main from './page/Main'
-import PageRegister from './page/PageRegister'
 import PageUserImport from './page/pageUserImport'
 import PageUserCollection from './page/pageUserCollection'
 import PageItemInfo from './page/pageItemInfo'
@@ -12,11 +11,11 @@ import ItemCreate from './page/ItemCreate'
 
 import { history } from './helper'
 import { alertActions, userActions } from './action'
-import { LoginPage } from './component'
+import { LoginPage, RegisterPage } from './component'
 
 import './App.css'
 
-import { Layout, Menu, Breadcrumb, Alert, Dropdown } from 'antd'
+import { Layout, Menu, Breadcrumb, Alert, Dropdown, PageHeader } from 'antd'
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 const { Header, Content, Footer } = Layout
@@ -41,7 +40,7 @@ export default function App(props) {
   const drawAlert = () => {
     if (alert.message) {
       return (
-        <Alert message={alert.message} type={alert.type} showIcon closable />
+        <Alert message={alert.message} type={alert.type} showIcon />
       )
     }
   }
@@ -54,16 +53,6 @@ export default function App(props) {
         </Menu.Item>
       )
     }
-  }
-
-  const drawRegisterMenu = () => {
-    if (auth.loggedIn == false) {
-      return (
-        <Menu.Item key="register" style={{float: 'right'}}>
-          <Link to="/register">회원가입</Link>
-        </Menu.Item>
-      )
-    }  
   }
 
   const getBookshelfUrl = () => {
@@ -104,13 +93,21 @@ export default function App(props) {
     }
   }
 
+  const drawPageHeader = () => {
+    return (
+      <PageHeader
+        className="site-page-header"
+        title="Title"
+      />
+    )
+  }
+
   return (
     <Layout>
       <Header style={{position:'fixed', zIndex:1, width:'100%'}} >
         <div className="logo" />
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
           <Menu.Item key="1">Menu 1</Menu.Item>
-          {drawRegisterMenu()}
           {drawLoginMenu()}
           {drawUserInfo()}
         </Menu>
@@ -123,9 +120,10 @@ export default function App(props) {
         </Breadcrumb>
         {drawAlert()}
         <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
+          {drawPageHeader()}
           <Switch>
             <Route exact path="/" component={Main} />
-            <Route exact path="/register" component={PageRegister} />
+            <Route exact path="/register" component={RegisterPage} />
             <Route exact path="/login" component={LoginPage} />
             <Route path="/user/collection/:id" component={PageUserCollection} />
             <Route path="/item/:id" component={PageItemInfo} />

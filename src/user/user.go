@@ -16,10 +16,10 @@ const (
 )
 
 type RegisterForm struct {
-	Email      string `form:"inputEmail" binding:"required"`
-	Nickname   string `form:"inputNickname" binding:"required"`
-	Password   string `form:"inputPassword" binding:"required"`
-	PasswordRe string `form:"inputPasswordRe" binding:"required"`
+	Email      string `json:"username" binding:"required"`
+	Nickname   string `json:"nickname" binding:"required"`
+	Password   string `json:"password" binding:"required"`
+	PasswordRe string `json:"passwordRe" binding:"required"`
 }
 
 type LoginInput struct {
@@ -69,11 +69,11 @@ func CreateUserFromInput(form RegisterForm) error {
 	count := 0
 	dbCon.Model(&db.User{}).Where("email = ?", form.Email).Count(&count)
 	if count > 0 {
-		return errors.New("email duplicated")
+		return errors.New("이메일 중복")
 	}
 	dbCon.Model(&db.User{}).Where("nickname = ?", form.Nickname).Count(&count)
 	if count > 0 {
-		return errors.New("nickname duplicated")
+		return errors.New("닉네임 중복")
 	}
 
 	dbCon.Create(&user)

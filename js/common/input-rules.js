@@ -1,6 +1,8 @@
 export const inputRules = {
     username,
+    nickname,
     password,
+    passwordRe,
 }
 
 function required() {
@@ -16,13 +18,40 @@ function min(val) {
 }
 
 function max(val) {
-    return { max: val, message: `최대 ${val}자 이하여야 합니다.` }
+    return { max: val, message: `최대 ${val}글자 입니다.` }
 }
 
+const equalPassword = ({ getFieldValue }) => ({
+    validator(rule, value) {
+        if (!value || getFieldValue('password') == value) {
+            return Promise.resolve()
+        }
+        return Promise.reject('두 비밀번호는 같아야 합니다.')
+    }
+})
+
+const noWhitespace = () => ({
+    validator(rule, value) {
+        if (!value || value.indexOf(' ') >= 0) {
+            return Promise.reject('공백은 사용할 수 없습니다.')
+        }
+        return Promise.resolve()
+    }
+})
+
+
 function username() {
-    return [ required(), email() ]
+    return [ required(), email(), max(200), noWhitespace ]
+}
+
+function nickname() {
+    return [ required(), max(9), noWhitespace ]
 }
 
 function password() {
     return [ required(), min(8), max(50) ]
+}
+
+function passwordRe() {
+    return [ required(), min(8), max(50), equalPassword ]
 }

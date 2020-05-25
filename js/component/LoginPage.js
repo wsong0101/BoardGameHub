@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -20,8 +20,8 @@ function LoginPage() {
 
     return (
         <Row>
-            <Col span={8} offset={8}>
-                <Form name="normal_login" className="login-form" initialValues={{ remember: true }} size="large"
+            <Col lg={{span: 8, offset: 8}} md={{span: 12, offset: 6}} xs={{span: 24}}>
+                <Form name="login" className="login-form" initialValues={{ remember: false }} size="large"
                     onFinish={onFinish}>
                     <Form.Item name="username" rules={inputRules.username()}>
                         <Input prefix={<UserOutlined className="site-form-item-icon" />}
@@ -40,11 +40,17 @@ function LoginPage() {
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" className="login-form-button">
+                        <Button type="primary" htmlType="submit" className="login-form-button"
+                            loading={loggingIn}>
                             로그인
                         </Button>
                     </Form.Item>
                 </Form>
+                <div className="text-center">
+                    <Link to="/" className="mx-2">아이디 찾기</Link>/ 
+                    <Link to="/" className="mx-2">비밀번호 찾기</Link>/ 
+                    <Link to="/register" className="mx-2">회원 가입</Link>
+                </div>
             </Col>
         </Row>
     )

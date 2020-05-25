@@ -11,28 +11,28 @@ import (
 func OnRegister(c *gin.Context) {
 	var form user.RegisterForm
 	if err := c.ShouldBind(&form); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	// 입력값 유효한지 여부 서버검사 필요.
 
 	if form.Password != form.PasswordRe {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "password mismatch"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "두 패스워드가 일치하지 않습니다."})
 		return
 	}
 
 	if err := user.CreateUserFromInput(form); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "registration success"})
+	c.JSON(http.StatusOK, gin.H{"message": "회원 가입 성공!"})
 }
 
 func OnLogin(c *gin.Context) {
 	dbUser, err := user.LoginFromInput(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -41,7 +41,7 @@ func OnLogin(c *gin.Context) {
 
 func OnLogout(c *gin.Context) {
 	if err := user.Logout(c); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -51,7 +51,7 @@ func OnLogout(c *gin.Context) {
 func OnSessionUser(c *gin.Context) {
 	user, err := user.GetSessionUser(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

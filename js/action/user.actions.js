@@ -19,6 +19,7 @@ function login(username, password, remember, returnUrl) {
             .then(
                 user => { 
                     dispatch(success(user))
+                    returnUrl = returnUrl ? returnUrl : "/"
                     history.push(returnUrl)
                 },
                 error => {
@@ -52,7 +53,7 @@ function register(user) {
                 user => { 
                     dispatch(success());
                     history.push('/login')
-                    dispatch(alertActions.success('Registration successful'))
+                    dispatch(alertActions.success('회원 가입 성공!'))
                 },
                 error => {
                     dispatch(failure(error.toString()))
