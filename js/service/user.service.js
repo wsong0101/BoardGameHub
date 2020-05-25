@@ -11,26 +11,34 @@ export const userService = {
     delete: _delete
 };
 
-function login(username, password) {
+function login(username, password, remember) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
-    };
+    }
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${config.apiUrl}/login`, requestOptions)
         .then(handleResponse)
         .then(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
-
+            // store user details and jwt token in session storage to keep user logged in between page refreshes
+            sessionStorage.setItem('user', JSON.stringify(user));
             return user;
-        });
+        })
 }
 
 function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem('user');
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader()
+    }
+
+    return fetch(`${config.apiUrl}/logout`, requestOptions)
+    .then(handleResponse)
+    .then(() => {
+        // remove user from session storage to log user out
+        sessionStorage.removeItem('user');
+    })
 }
 
 function getAll() {

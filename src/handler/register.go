@@ -30,13 +30,7 @@ func OnRegister(c *gin.Context) {
 }
 
 func OnLogin(c *gin.Context) {
-	var form user.LoginForm
-	if err := c.ShouldBind(&form); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	dbUser, err := user.LoginFromInput(c, form)
+	dbUser, err := user.LoginFromInput(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

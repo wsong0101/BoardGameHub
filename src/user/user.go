@@ -22,9 +22,9 @@ type RegisterForm struct {
 	PasswordRe string `form:"inputPasswordRe" binding:"required"`
 }
 
-type LoginForm struct {
-	Email    string `form:"inputEmail" binding:"required"`
-	Password string `form:"inputPassword" binding:"required"`
+type LoginInput struct {
+	Email    string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type CollectionCounts struct {
@@ -81,14 +81,20 @@ func CreateUserFromInput(form RegisterForm) error {
 	return nil
 }
 
-func LoginFromInput(c *gin.Context, form LoginForm) (db.User, error) {
+func LoginFromInput(c *gin.Context) (db.User, error) {
 	dbCon := db.Get()
 	var user db.User
-	dbCon.Where("email = ?", form.Email).First(&user)
-	if user.ID <= 0 {
+
+	var input LoginInput
+	if err := c.ShouldBind(&input); err != nil {
+		return user, err
+	}
+
+	if err := dbCon.Where("email = ?", input.Email).First(&user).Error; err != nil {
 		return user, errors.New("invalid email")
 	}
-	if err := util.ComparePassword(user.Password, form.Password); err != nil {
+
+	if err := util.ComparePassword(user.Password, input.Password); err != nil {
 		return user, errors.New("invalid password")
 	}
 

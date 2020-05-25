@@ -9,24 +9,24 @@ export const userActions = {
     register,
     getAll,
     delete: _delete
-};
+}
 
-function login(username, password) {
+function login(username, password, remember, returnUrl) {
     return dispatch => {
         dispatch(request({ username }))
 
-        userService.login(username, password)
+        userService.login(username, password, remember)
             .then(
                 user => { 
                     dispatch(success(user))
-                    history.push('/')
+                    history.push(returnUrl)
                 },
                 error => {
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()))
                 }
-            );
-    };
+            )
+    }
 
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
@@ -35,6 +35,11 @@ function login(username, password) {
 
 function logout() {
     userService.logout()
+        .then(
+            () => {
+                history.push('/')
+            }
+        )
     return { type: userConstants.LOGOUT }
 }
 
