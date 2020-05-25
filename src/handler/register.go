@@ -26,7 +26,7 @@ func OnRegister(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "회원 가입 성공!"})
+	c.JSON(http.StatusOK, "")
 }
 
 func OnLogin(c *gin.Context) {

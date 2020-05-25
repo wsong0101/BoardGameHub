@@ -11,7 +11,7 @@ import ItemCreate from './page/ItemCreate'
 
 import { history } from './helper'
 import { alertActions, userActions } from './action'
-import { LoginPage, RegisterPage } from './component'
+import { LoginPage, RegisterPage, RegisterWelcomePage } from './component'
 
 import './App.css'
 
@@ -59,7 +59,7 @@ export default function App(props) {
     if (auth.loggedIn == false) {
       return '#'
     }
-    return `/user/collection/${auth.user.id}/1`
+    return `/user/collection/${auth.user.id}/own`
   }
 
   const onLogout = () => {
@@ -124,6 +124,7 @@ export default function App(props) {
           <Switch>
             <Route exact path="/" component={Main} />
             <Route exact path="/register" component={RegisterPage} />
+            <Route exact path="/register/welcome" component={RegisterWelcomePage} />
             <Route exact path="/login" component={LoginPage} />
             <Route path="/user/collection/:id" component={PageUserCollection} />
             <Route path="/item/:id" component={PageItemInfo} />

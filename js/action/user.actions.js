@@ -52,8 +52,7 @@ function register(user) {
             .then(
                 user => { 
                     dispatch(success());
-                    history.push('/login')
-                    dispatch(alertActions.success('회원 가입 성공!'))
+                    history.push('/register/welcome')
                 },
                 error => {
                     dispatch(failure(error.toString()))

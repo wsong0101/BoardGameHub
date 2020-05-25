@@ -22,6 +22,7 @@ func main() {
 
 	r.GET("/", returnApp)
 	r.GET("/register", returnApp)
+	r.GET("/register/welcome", returnApp)
 	r.GET("/login", returnApp)
 	r.GET("/user/import", returnApp)
 	r.GET("/user/collection/:id/*category", returnApp)
