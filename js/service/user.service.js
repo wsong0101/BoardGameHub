@@ -1,5 +1,5 @@
-import config from 'config';
-import { authHeader } from '../helper';
+import config from 'config'
+import { authHeader } from '../helper'
 
 export const userService = {
     login,
@@ -9,7 +9,7 @@ export const userService = {
     getById,
     update,
     delete: _delete
-};
+}
 
 function login(username, password, remember) {
     const requestOptions = {
@@ -22,8 +22,8 @@ function login(username, password, remember) {
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in session storage to keep user logged in between page refreshes
-            sessionStorage.setItem('user', JSON.stringify(user));
-            return user;
+            sessionStorage.setItem('user', JSON.stringify(user))
+            return user
         })
 }
 
@@ -37,7 +37,21 @@ function logout() {
     .then(handleResponse)
     .then(() => {
         // remove user from session storage to log user out
-        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('user')
+    })
+}
+
+function getCollection(userId, category, page) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, category })
+    }
+
+    return fetch(`${config.apiUrl}/user/collection/${userId}/${category}/${page}`, requestOptions)
+    .then(handleResponse)
+    .then(data => {
+        return data
     })
 }
 

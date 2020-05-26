@@ -49,21 +49,42 @@ function register(user) {
         dispatch(request(user))
 
         userService.register(user)
-            .then(
-                user => { 
-                    dispatch(success());
-                    history.push('/register/welcome')
-                },
-                error => {
-                    dispatch(failure(error.toString()))
-                    dispatch(alertActions.error(error.toString()))
-                }
-            )
+        .then(
+            user => { 
+                dispatch(success())
+                history.push('/register/welcome')
+            },
+            error => {
+                dispatch(failure(error.toString()))
+                dispatch(alertActions.error(error.toString()))
+            }
+        )
     }
 
     function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
     function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
     function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
+}
+
+function getCollection(userId, category, page) {
+    return dispatch => {
+        dispatch(request(u))
+
+        userService.getCollection(userId, category, page)
+        .then(
+            data => {
+                dispatch(success(data))
+            },
+            error => {
+                dispatch(failure(error.toString()))
+                dispatch(alertActions.error(error.toString()))
+            }
+        )
+    }
+
+    function request() { return { type: userConstants.GETCOLLECTION_REQUEST } }
+    function success(data) { return { type: userConstants.GETCOLLECTION_SUCCESS, data } }
+    function failure(error) { return { type: userConstants.GETCOLLECTION_FAILURE, error } }
 }
 
 function getAll() {

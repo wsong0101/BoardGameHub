@@ -5,13 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoginRoute from './loginRoute'
 import Main from './page/Main'
 import PageUserImport from './page/pageUserImport'
-import PageUserCollection from './page/pageUserCollection'
 import PageItemInfo from './page/pageItemInfo'
 import ItemCreate from './page/ItemCreate'
 
 import { history } from './helper'
 import { alertActions, userActions } from './action'
-import { LoginPage, RegisterPage, RegisterWelcomePage } from './component'
+import { LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage } from './component'
 
 import './App.css'
 
@@ -126,7 +125,8 @@ export default function App(props) {
             <Route exact path="/register" component={RegisterPage} />
             <Route exact path="/register/welcome" component={RegisterWelcomePage} />
             <Route exact path="/login" component={LoginPage} />
-            <Route path="/user/collection/:id" component={PageUserCollection} />
+
+            <Route path="/user/collection/:id" component={CollectionPage} />
             <Route path="/item/:id" component={PageItemInfo} />
             <LoginRoute exact path="/user/import" component={PageUserImport} />
             <LoginRoute exact path="/item/create" component={ItemCreate} />
