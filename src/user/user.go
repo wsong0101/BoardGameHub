@@ -27,6 +27,14 @@ type LoginInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type UpdateCollectionInput struct {
+	ID     uint     `json:"id" binding:"required"`
+	Type   string   `json:"type" binding:"required"`
+	Score  int      `json:"score"`
+	Memo   string   `json:"memo"`
+	Status []string `json:"status"`
+}
+
 type CollectionCounts struct {
 	Own        int
 	PrevOwned  int
@@ -188,7 +196,7 @@ func GetCollection(userID uint, category string, page int) ([]CollectionInfo, er
 	query := " AND " + category + " = 1"
 
 	var collections []db.Collection
-	if err := dbCon.Where("user_id = ?"+query, userID).Offset((page - 1) * 50).Limit(50).Find(&collections).Error; err != nil {
+	if err := dbCon.Where("user_id = ?"+query, userID).Order("score desc, id").Offset((page - 1) * 50).Limit(50).Find(&collections).Error; err != nil {
 		return infos, err
 	}
 
@@ -238,4 +246,64 @@ func GetItemCollection(userID uint, itemID uint) (db.Collection, error) {
 	}
 
 	return info, nil
+}
+
+func UpdateCollection(c *gin.Context) error {
+	var input UpdateCollectionInput
+	if err := c.ShouldBind(&input); err != nil {
+		return err
+	}
+
+	dbUser, err := GetSessionUser(c)
+	if err != nil {
+		return err
+	}
+
+	var collection db.Collection
+	var count int
+
+	dbCon := db.Get()
+	dbCon.Where("user_id = ? AND item_id = ?", dbUser.ID, input.ID).First(&collection).Count(&count)
+
+	if count < 1 {
+		collection.UserID = dbUser.ID
+		collection.ItemID = input.ID
+	}
+
+	switch input.Type {
+	case "score":
+		collection.Score = input.Score
+	case "status":
+		collection.Own = 0
+		collection.PrevOwned = 0
+		collection.ForTrade = 0
+		collection.Want = 0
+		collection.WantToBuy = 0
+		collection.Wishlist = 0
+		collection.Preordered = 0
+		for _, s := range input.Status {
+			switch s {
+			case "own":
+				collection.Own = 1
+			case "prev_owned":
+				collection.PrevOwned = 1
+			case "for_trade":
+				collection.ForTrade = 1
+			case "want":
+				collection.Want = 1
+			case "want_to_buy":
+				collection.WantToBuy = 1
+			case "wishlist":
+				collection.Wishlist = 1
+			case "preordered":
+				collection.Preordered = 1
+			}
+		}
+	case "memo":
+		collection.Memo = input.Memo
+	}
+
+	dbCon.Save(&collection)
+
+	return nil
 }

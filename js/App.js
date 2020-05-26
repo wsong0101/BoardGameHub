@@ -21,8 +21,9 @@ const { Header, Content, Footer } = Layout
 
 export default function App(props) {
   const location = useLocation()
-  const alert = useSelector(state => state.alert)
-  const auth = useSelector(state => state.authentication)
+  const alert = useSelector(state => state.get('alert'))
+  const auth = useSelector(state => state.get('authentication'))
+  const user = auth.get('user')
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function App(props) {
   }
 
   const drawLoginMenu = () => {
-    if (auth.loggedIn == false) {
+    if (!auth.get('loggedIn')) {
       return (
         <Menu.Item key="login" style={{float: 'right'}}>
           <Link to={getLoginUri()}>로그인</Link>
@@ -54,11 +55,11 @@ export default function App(props) {
     }
   }
 
-  const getBookshelfUrl = () => {
-    if (auth.loggedIn == false) {
+  const getMyBookshelfUrl = () => {
+    if (!auth.get('loggedIn')) {
       return '#'
     }
-    return `/user/collection/${auth.user.id}/own`
+    return `/user/collection/${user.get('id')}/own`
   }
 
   const onLogout = () => {
@@ -68,7 +69,7 @@ export default function App(props) {
   const userMenu = (
     <Menu>
       <Menu.Item key="bookshelf">
-        <Link to={getBookshelfUrl()}>내 책장</Link>
+        <Link to={getMyBookshelfUrl()}>내 책장</Link>
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="logout">
@@ -78,12 +79,12 @@ export default function App(props) {
   )
 
   const drawUserInfo = () => {
-    if (auth.loggedIn) {
+    if (auth.get('loggedIn')) {
       return (
         <Menu.Item key="user-info" style={{float: 'right'}}>
           <Dropdown overlay={userMenu} trigger={['click', 'hover']} >
             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-              {auth.user.nickname} <DownOutlined />
+              {user.get('nickname')} <DownOutlined />
             </a>
           </Dropdown>
         </Menu.Item>
@@ -126,7 +127,7 @@ export default function App(props) {
             <Route exact path="/register/welcome" component={RegisterWelcomePage} />
             <Route exact path="/login" component={LoginPage} />
 
-            <Route path="/user/collection/:id" component={CollectionPage} />
+            <Route path="/user/collection/:id/:category" component={CollectionPage} />
             <Route path="/item/:id" component={PageItemInfo} />
             <LoginRoute exact path="/user/import" component={PageUserImport} />
             <LoginRoute exact path="/item/create" component={ItemCreate} />

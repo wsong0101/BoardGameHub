@@ -5,6 +5,8 @@ export const userService = {
     login,
     logout,
     register,
+    getCollection,
+    updateCollection,
     getAll,
     getById,
     update,
@@ -41,18 +43,50 @@ function logout() {
     })
 }
 
+function register(user) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+    }
+
+    return fetch(`${config.apiUrl}/register`, requestOptions).then(handleResponse);
+}
+
 function getCollection(userId, category, page) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, category })
     }
 
     return fetch(`${config.apiUrl}/user/collection/${userId}/${category}/${page}`, requestOptions)
     .then(handleResponse)
-    .then(data => {
-        return data
-    })
+}
+
+function updateCollection(id, type, value) {
+    let obj = {}
+    obj.id = id
+    obj.type = type
+    switch (type) {
+        case "score":
+            obj.score = value
+            break
+        case "status":
+            obj.status = value
+            break
+        case "memo":
+            obj.memo = value
+            break
+    }
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(obj)
+    }
+
+    return fetch(`${config.apiUrl}/user/collection`, requestOptions)
+    .then(handleResponse)
 }
 
 function getAll() {
@@ -71,16 +105,6 @@ function getById(id) {
     };
 
     return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
-}
-
-function register(user) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
-    };
-
-    return fetch(`${config.apiUrl}/register`, requestOptions).then(handleResponse);
 }
 
 function update(user) {

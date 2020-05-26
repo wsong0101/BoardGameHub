@@ -1,7 +1,8 @@
 import { userConstants } from '../constant'
+import { Map } from 'immutable'
 
 let user = JSON.parse(sessionStorage.getItem('user'))
-const initialState = user ? { loggedIn: true, user } : { loggedIn: false, user: {} }
+const initialState = user ? Map({ loggedIn: true, user: Map(user) }) : Map({ loggedIn: false, user: {} })
 
 export function authentication(state = initialState, action) {
   switch (action.type) {

@@ -39,7 +39,7 @@ func main() {
 
 	loginAuth.POST("/user/import", geek.OnUserImport)
 	r.POST("/user/collection/:id/:category/:page", handler.OnUserCollection)
-	loginAuth.PUT("/user/collection/:id/:type", handler.OnCollectionUpdate)
+	loginAuth.PUT("/user/collection", handler.OnCollectionUpdate)
 
 	loginAuth.POST("/item/import", geek.OnItemImport)
 	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)

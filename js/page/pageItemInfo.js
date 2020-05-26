@@ -5,7 +5,7 @@ import DisplayNotice from '../common/displayNotice'
 import { useAuth } from '../util/context'
 import Util from '../util/util'
 import './PageItemInfo.css'
-import ItemScore from '../user/itemScore'
+import ItemScore from '../component/ItemScore'
 import CollectionEditModal from '../user/collectionEditModal'
 
 export default function PageItemInfo() {

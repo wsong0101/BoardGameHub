@@ -7,8 +7,10 @@ export const userActions = {
     login,
     logout,
     register,
-    getAll,
-    delete: _delete
+    getCollection,
+    showModal,
+    hideModal,
+    updateCollection,
 }
 
 function login(username, password, remember, returnUrl) {
@@ -68,7 +70,7 @@ function register(user) {
 
 function getCollection(userId, category, page) {
     return dispatch => {
-        dispatch(request(u))
+        dispatch(request())
 
         userService.getCollection(userId, category, page)
         .then(
@@ -82,40 +84,41 @@ function getCollection(userId, category, page) {
         )
     }
 
-    function request() { return { type: userConstants.GETCOLLECTION_REQUEST } }
-    function success(data) { return { type: userConstants.GETCOLLECTION_SUCCESS, data } }
-    function failure(error) { return { type: userConstants.GETCOLLECTION_FAILURE, error } }
+    function request() { return { type: userConstants.GET_COLLECTION_REQUEST } }
+    function success(data) { return { type: userConstants.GET_COLLECTION_SUCCESS, data } }
+    function failure(error) { return { type: userConstants.GET_COLLECTION_FAILURE, error } }
 }
 
-function getAll() {
-    return dispatch => {
-        dispatch(request());
-
-        userService.getAll()
-            .then(
-                users => dispatch(success(users)),
-                error => dispatch(failure(error.toString()))
-            )
-    }
-
-    function request() { return { type: userConstants.GETALL_REQUEST } }
-    function success(users) { return { type: userConstants.GETALL_SUCCESS, users } }
-    function failure(error) { return { type: userConstants.GETALL_FAILURE, error } }
+function showModal(collection) {
+    return { type: userConstants.SHOW_MODAL, collection }
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
+function hideModal() {
+    return { type: userConstants.HIDE_MODAL }
+}
+
+function updateModal(id, type, value) {
+    return { type: userConstants.UPDATE_MODAL, update: { id, type, value } }
+}
+
+function updateCollection(id, type, value) {
     return dispatch => {
-        dispatch(request(id))
+        dispatch(request())
 
-        userService.delete(id)
-            .then(
-                user => dispatch(success(id)),
-                error => dispatch(failure(id, error.toString()))
-            )
+        userService.updateCollection(id, type, value)
+        .then(
+            data => {
+                dispatch(success(id, type, value))
+                dispatch(updateModal(id, type, value))
+            },
+            error => {
+                dispatch(failure(error.toString()))
+                dispatch(alertActions.error(error.toString()))
+            }
+        )
     }
-
-    function request(id) { return { type: userConstants.DELETE_REQUEST, id } }
-    function success(id) { return { type: userConstants.DELETE_SUCCESS, id } }
-    function failure(id, error) { return { type: userConstants.DELETE_FAILURE, id, error } }
+    
+    function request() { return { type: userConstants.UPDATE_COLLECTION_REQUEST } }
+    function success(id, type, value) { return { type: userConstants.UPDATE_COLLECTION_SUCCESS, update: {id, type, value}} }
+    function failure(error) { return { type: userConstants.UPDATE_COLLECTION_FAILURE, error } }
 }

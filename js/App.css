@@ -2,7 +2,7 @@ body {
   font-size: 0.9rem;
 }
 
-a {
+a, .hand {
  cursor: pointer; 
 }
 
@@ -13,6 +13,7 @@ a {
   margin: 16px 24px 16px 0;
   float: left;
 }
+
 .site-layout .site-layout-background {
   background: #fff;
 }

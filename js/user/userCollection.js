@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import Util from '../util/util'
 import './UserCollection.css'
-import ItemScore from './itemScore'
+import ItemScore from '../component/ItemScore'
 import CollectionEditModal from './collectionEditModal'
 
 export default function UserCollection(props) {
