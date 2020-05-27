@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react'
-import { useLocation, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { userActions } from '../action'
-import { inputRules } from '../common'
 import { Util } from '../util'
 import ItemScore from './ItemScore'
 import CollectionEditModal from './CollectionEditModal'
 
-import { Row, Col, Card, Rate, Form, Input, Button, Checkbox } from 'antd'
-import { UserOutlined, LockOutlined, StarFilled } from '@ant-design/icons'
+import { Row, Col } from 'antd'
 import './CollectionPage.css'
 
 function CollectionPage({match}) {

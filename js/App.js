@@ -1,17 +1,16 @@
-import React, {useState, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import { Route, Switch, Redirect, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createSelector } from '@reduxjs/toolkit';
 
 import LoginRoute from './loginRoute'
-import Main from './page/Main'
 import PageUserImport from './page/pageUserImport'
-import PageItemInfo from './page/pageItemInfo'
 import ItemCreate from './page/ItemCreate'
 
 import { history } from './helper'
 import { alertActions, userActions } from './action'
-import { LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage } from './component'
+import {
+  LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage, MainPage,
+} from './component'
 
 import './App.css'
 
@@ -125,7 +124,7 @@ export default function App(props) {
         <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
           {drawPageHeader()}
           <Switch>
-            <Route exact path="/" component={Main} />
+            <Route exact path="/" component={MainPage} />
             <Route exact path="/register" component={RegisterPage} />
             <Route exact path="/register/welcome" component={RegisterWelcomePage} />
             <Route exact path="/login" component={LoginPage} />

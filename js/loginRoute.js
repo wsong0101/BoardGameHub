@@ -1,15 +1,14 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { useAuth } from './util/context'
 
 export default function LoginRoute(props) {
-  const { userInfo } = useAuth()
+  const auth = useSelector(state => state.auth)
 
   function getLoginUri() {
     return "/login?url=" + encodeURIComponent(props.location.pathname)
   }
 
-  if (userInfo) {
+  if (auth.loggedIn) {
     return (
       <Route exact path={props.path} component={props.component}/>
     )

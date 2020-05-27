@@ -14,7 +14,7 @@ import { UserOutlined, LockOutlined, StarFilled } from '@ant-design/icons'
 import './ItemInfoPage.css'
 
 function ItemInfoPage({match}) {
-    const auth = useSelector(state => state.authentication)
+    const auth = useSelector(state => state.auth)
     const item = useSelector(state => state.item.item)
     const collection = useSelector(state => state.item.collection)
 
@@ -78,7 +78,7 @@ function ItemInfoPage({match}) {
     }
 
     const drawCog = () => {
-        if (!collection) {
+        if (!collection || !auth.loggedIn) {
             return
         }
         return (
