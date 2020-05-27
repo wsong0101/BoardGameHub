@@ -9,9 +9,11 @@ const { TextArea } = Input;
 
 export default function CollectionEditModal() {
   const dispatch = useDispatch()
-  const modal = useSelector(state => state.get('modal'))
+  const modal = useSelector(state => state.modal)
   const [memo, setMemo] = useState("")
 
+  const e = modal.collection
+  
   useEffect(() => {
     setMemo(getMemo(e))
   }, [modal])
@@ -41,8 +43,6 @@ export default function CollectionEditModal() {
     return e.Status
   }
 
-  const e = modal.get('collection')
-  console.log(e)
 
   const statusOptions = [
     { label: '보유중', value: 'own'},
@@ -68,7 +68,7 @@ export default function CollectionEditModal() {
   return (
     <Modal
       title={Util.getName(e)}
-      visible={modal.get('showModal')}
+      visible={modal.showModal}
       onCancel={onCancel}
       footer={null}
     >

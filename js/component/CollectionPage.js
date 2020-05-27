@@ -13,8 +13,8 @@ import { UserOutlined, LockOutlined, StarFilled } from '@ant-design/icons'
 import './CollectionPage.css'
 
 function CollectionPage({match}) {
-    const auth = useSelector(state => state.get('authentication'))
-    const collection = useSelector(state => state.get('collection'))
+    const auth = useSelector(state => state.auth)
+    const collection = useSelector(state => state.collection)
 
     const dispatch = useDispatch()
     useEffect(() => {
@@ -26,10 +26,10 @@ function CollectionPage({match}) {
     }
 
     let items = []
-    if (collection.get('collection')) {
-        for (const e of collection.get('collection')) {
+    if (collection.collection) {
+        for (const e of collection.collection) {
             let cog
-            if (auth.get('loggedIn') && auth.get('user').id == match.params.id) {
+            if (auth.loggedIn && auth.user.id == match.params.id) {
                 cog = <i className="fas fa-cog text-info hand" onClick={() => {showModal(e)}}></i>
             }
 

@@ -31,4 +31,4 @@ const alert = createSlice({
 })
 
 export const { alertSuccess, alertError, alertClear } = alert.actions
-export default alert.reducer
+export  default alert.reducer
