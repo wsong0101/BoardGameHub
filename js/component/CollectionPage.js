@@ -29,7 +29,7 @@ function CollectionPage({match}) {
     if (collection.get('collection')) {
         for (const e of collection.get('collection')) {
             let cog
-            if (auth.get('loggedIn') && auth.get('user').get('id') == match.params.id) {
+            if (auth.get('loggedIn') && auth.get('user').id == match.params.id) {
                 cog = <i className="fas fa-cog text-info hand" onClick={() => {showModal(e)}}></i>
             }
 

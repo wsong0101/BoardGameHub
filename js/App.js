@@ -23,7 +23,6 @@ export default function App(props) {
   const location = useLocation()
   const alert = useSelector(state => state.get('alert'))
   const auth = useSelector(state => state.get('authentication'))
-  const user = auth.get('user')
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -59,7 +58,7 @@ export default function App(props) {
     if (!auth.get('loggedIn')) {
       return '#'
     }
-    return `/user/collection/${user.get('id')}/own`
+    return `/user/collection/${auth.get('user').id}/own`
   }
 
   const onLogout = () => {
@@ -82,9 +81,9 @@ export default function App(props) {
     if (auth.get('loggedIn')) {
       return (
         <Menu.Item key="user-info" style={{float: 'right'}}>
-          <Dropdown overlay={userMenu} trigger={['click', 'hover']} >
+          <Dropdown overlay={userMenu} trigger={['click']} >
             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-              {user.get('nickname')} <DownOutlined />
+              {auth.get('user').nickname} <DownOutlined />
             </a>
           </Dropdown>
         </Menu.Item>
@@ -107,7 +106,9 @@ export default function App(props) {
       <Header style={{position:'fixed', zIndex:1, width:'100%'}} >
         <div className="logo" />
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-          <Menu.Item key="1">Menu 1</Menu.Item>
+          <Menu.Item key="1">
+            <Link to='/' >Menu 1</Link>
+          </Menu.Item>
           {drawLoginMenu()}
           {drawUserInfo()}
         </Menu>

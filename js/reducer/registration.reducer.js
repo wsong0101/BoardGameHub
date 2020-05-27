@@ -1,13 +1,16 @@
-import { userConstants } from '../constant';
+import { userConstants } from '../constant'
+import { Map } from 'immutable'
 
-export function registration(state = {}, action) {
+const initialState = Map({})
+
+export function registration(state = initialState, action) {
   switch (action.type) {
     case userConstants.REGISTER_REQUEST:
-      return { registering: true }
+      return state.set('registering', true)
     case userConstants.REGISTER_SUCCESS:
-      return {}
+      return initialState
     case userConstants.REGISTER_FAILURE:
-      return {}
+      return initialState
     default:
       return state
   }

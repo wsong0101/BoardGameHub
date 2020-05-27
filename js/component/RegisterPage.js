@@ -8,7 +8,7 @@ import { Row, Col, Form, Input, Button, Checkbox } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 function RegisterPage() {
-  const registering = useSelector(state => state.registration.registering)
+  const registering = useSelector(state => state.get('registration').get('registering'))
   const dispatch = useDispatch()
   
   function onFinish(inputs) {

@@ -11,7 +11,7 @@ import './LoginPage.css'
 
 function LoginPage() {
     let query = new URLSearchParams(useLocation().search)
-    const loggingIn = useSelector(state => state.authentication.loggingIn)
+    const loggingIn = useSelector(state => state.get('authentication').get('loggingIn'))
     const dispatch = useDispatch()
 
     function onFinish(inputs) {
