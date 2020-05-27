@@ -14,9 +14,9 @@ import { UserOutlined, LockOutlined, StarFilled } from '@ant-design/icons'
 import './ItemInfoPage.css'
 
 function ItemInfoPage({match}) {
-    const auth = useSelector(state => state.get('authentication'))
-    const item = useSelector(state => state.get('item').get('item'))
-    const collection = useSelector(state => state.get('item').get('collection'))
+    const auth = useSelector(state => state.authentication)
+    const item = useSelector(state => state.item.item)
+    const collection = useSelector(state => state.item.collection)
 
     const dispatch = useDispatch()
     useEffect(() => {
@@ -84,7 +84,7 @@ function ItemInfoPage({match}) {
         return (
             <Descriptions.Item>
                 <ItemScore score={collection.Score} />
-                <i className="fas fa-cog text-info hand" onClick={() => {showModal()}}></i>
+                <i className="fas fa-cog text-info hand ml-4" onClick={() => {showModal()}}></i>
             </Descriptions.Item>
         )
     }

@@ -25,7 +25,7 @@ const alert = createSlice({
       }
     },
     alertClear(state, action) {
-      state = {}
+      state.message = undefined
     }
   }
 })

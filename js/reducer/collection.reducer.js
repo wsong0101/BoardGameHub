@@ -27,6 +27,9 @@ const collection = createSlice({
     },
     collectionUpdate: {
       reducer(state, action) {
+        if (!state.collection) {
+          return state
+        }
         const { id, type, value } = action.payload
         let found = state.collection.find(e => e.ID == id)
         if (found) {

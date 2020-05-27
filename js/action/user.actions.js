@@ -5,8 +5,10 @@ import { history } from '../helper'
 import {
     alertError, 
     authRequest, authSuccess, authFailure, authLogout,
+    registerRequest, registerSuccess, registerFailure,
     collectionRequest, collectionSuccess, collectionFailure, collectionUpdate,
     showModal as reducerShowModal, hideModal as reducerHideModal, updateModal as reducerUpdateModal,
+    itemRequest, itemSuccess, itemFailure, itemUpdate,
 } from '../reducer'
 
 export const userActions = {
@@ -50,24 +52,20 @@ function logout() {
 
 function register(user) {
     return dispatch => {
-        dispatch(request(user))
+        dispatch(registerRequest(user))
 
         userService.register(user)
         .then(
             user => { 
-                dispatch(success())
+                dispatch(registerSuccess())
                 history.push('/register/welcome')
             },
             error => {
-                dispatch(failure(error.toString()))
-                dispatch(alertActions.error(error.toString()))
+                dispatch(registerFailure(error.toString()))
+                dispatch(alertError(error.toString()))
             }
         )
     }
-
-    function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
-    function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
 }
 
 function getCollection(userId, category, page) {
@@ -102,7 +100,7 @@ function updateCollection(id, type, value) {
             data => {
                 dispatch(collectionUpdate(id, type, value))
                 dispatch(reducerUpdateModal(type, value))
-                // dispatch(updateItemInfo(id, type, value))
+                dispatch(itemUpdate(type, value))
             },
             error => {
                 dispatch(alertError(error.toString()))
@@ -113,25 +111,17 @@ function updateCollection(id, type, value) {
 
 function getItemInfo(id) {
     return dispatch => {
-        dispatch(request())
+        dispatch(itemRequest())
 
         userService.getItemInfo(id)
         .then(
             data => {
-                dispatch(success(data))
+                dispatch(itemSuccess(data))
             },
             error => {
-                dispatch(failure(error.toString()))
-                dispatch(alertActions.error(error.toString()))
+                dispatch(itemFailure(error.toString()))
+                dispatch(alertError(error.toString()))
             }
         )
     }
-    
-    function request() { return { type: userConstants.GET_ITEM_INFO_REQUEST } }
-    function success(data) { return { type: userConstants.GET_ITEM_INFO_SUCCESS, data } }
-    function failure(error) { return { type: userConstants.GET_ITEM_INFO_FAILURE, error } }
-}
-
-function updateItemInfo(id, type, value) {
-    return { type: userConstants.UPDATE_ITEM_INFO, update: { id, type, value } }
 }
