@@ -86,7 +86,7 @@ function ItemInfoPage({match}) {
                     <img src={item.Thumbnail} className="info-img" />
                 </Col>
                 <Col sm={{span: 18}}>
-                    <Descriptions title={Util.getName(item)} column={{xs: 2, sm: 3}}>
+                    <Descriptions title={Util.getName(item)} column={{xs: 2, sm: 3}} className="general-info">
                         <Descriptions.Item>
                             <i className="fas fa-users"></i> {item.MinPlayers} ~ {item.MaxPlayers}인
                         </Descriptions.Item>
@@ -108,7 +108,7 @@ function ItemInfoPage({match}) {
                     </Descriptions>
                     <Divider />
                     <Descriptions column={1}>
-                        <Descriptions.Item>
+                        <Descriptions.Item style={{paddingBottom: '6px'}}>
                             <i className="fas fa-user"></i> 디자이너: {drawTags(3)}
                         </Descriptions.Item>
                         <Descriptions.Item>
