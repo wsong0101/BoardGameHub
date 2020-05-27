@@ -11,6 +11,7 @@ export const userActions = {
     showModal,
     hideModal,
     updateCollection,
+    getItemInfo,
 }
 
 function login(username, password, remember, returnUrl) {
@@ -121,4 +122,25 @@ function updateCollection(id, type, value) {
     function request() { return { type: userConstants.UPDATE_COLLECTION_REQUEST } }
     function success(id, type, value) { return { type: userConstants.UPDATE_COLLECTION_SUCCESS, update: {id, type, value}} }
     function failure(error) { return { type: userConstants.UPDATE_COLLECTION_FAILURE, error } }
+}
+
+function getItemInfo(id) {
+    return dispatch => {
+        dispatch(request())
+
+        userService.getItemInfo(id)
+        .then(
+            data => {
+                dispatch(success(data))
+            },
+            error => {
+                dispatch(failure(error.toString()))
+                dispatch(alertActions.error(error.toString()))
+            }
+        )
+    }
+    
+    function request() { return { type: userConstants.GET_ITEM_INFO_REQUEST } }
+    function success(data) { return { type: userConstants.GET_ITEM_INFO_SUCCESS, data } }
+    function failure(error) { return { type: userConstants.GET_ITEM_INFO_FAILURE, error } }
 }

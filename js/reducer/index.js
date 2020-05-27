@@ -3,7 +3,7 @@ import { combineReducers } from 'redux-immutable';
 import { authentication } from './authentication.reducer';
 import { registration } from './registration.reducer';
 import { alert } from './alert.reducer';
-import { collection, modal } from './user.reducer'
+import { collection, modal, item } from './user.reducer'
 
 const rootReducer = combineReducers({
   authentication,
@@ -11,6 +11,7 @@ const rootReducer = combineReducers({
   alert,
   collection,
   modal,
+  item,
 })
 
 export default rootReducer

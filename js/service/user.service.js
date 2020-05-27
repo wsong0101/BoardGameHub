@@ -7,6 +7,7 @@ export const userService = {
     register,
     getCollection,
     updateCollection,
+    getItemInfo,
     getAll,
     getById,
     update,
@@ -86,6 +87,16 @@ function updateCollection(id, type, value) {
     }
 
     return fetch(`${config.apiUrl}/user/collection`, requestOptions)
+    .then(handleResponse)
+}
+
+function getItemInfo(id) {    
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    }
+    
+    return fetch(`${config.apiUrl}/item/info/${id}`, requestOptions)
     .then(handleResponse)
 }
 

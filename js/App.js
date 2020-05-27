@@ -10,7 +10,7 @@ import ItemCreate from './page/ItemCreate'
 
 import { history } from './helper'
 import { alertActions, userActions } from './action'
-import { LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage } from './component'
+import { LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage } from './component'
 
 import './App.css'
 
@@ -129,7 +129,7 @@ export default function App(props) {
             <Route exact path="/login" component={LoginPage} />
 
             <Route path="/user/collection/:id/:category" component={CollectionPage} />
-            <Route path="/item/:id" component={PageItemInfo} />
+            <Route path="/item/info/:id" component={ItemInfoPage} />
             <LoginRoute exact path="/user/import" component={PageUserImport} />
             <LoginRoute exact path="/item/create" component={ItemCreate} />
             <Redirect from="*" to="/" />

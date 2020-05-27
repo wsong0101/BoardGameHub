@@ -58,3 +58,19 @@ export function modal(state = initialModalState, action) {
       return state
   }
 }
+
+const initialItemInfoStatus = Map({})
+
+export function item(state = initialItemInfoStatus, action) {
+  switch(action.type) {
+    case userConstants.GET_ITEM_INFO_REQUEST:
+      return state.set('gettingInfo', true)
+    case userConstants.GET_ITEM_INFO_SUCCESS:
+      return state.set('gettingInfo', false)
+        .set('info', action.data)
+    case userConstants.GET_ITEM_INFO_FAILURE:
+      return initialItemInfoStatus
+    default:
+      return state
+  }
+}
