@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { Route, Switch, Redirect, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from '@reduxjs/toolkit';
 
 import LoginRoute from './loginRoute'
 import Main from './page/Main'
@@ -21,9 +22,10 @@ const { Header, Content, Footer } = Layout
 
 export default function App(props) {
   const location = useLocation()
-  const alert = useSelector(state => state.get('alert'))
-  const auth = useSelector(state => state.get('authentication'))
   const dispatch = useDispatch()
+  
+  const alert = useSelector(state => state.alert)
+  const auth = useSelector(state => state.auth)
 
   useEffect(() => {
     history.listen((location, action) => {
@@ -45,7 +47,7 @@ export default function App(props) {
   }
 
   const drawLoginMenu = () => {
-    if (!auth.get('loggedIn')) {
+    if (!auth.loggedIn) {
       return (
         <Menu.Item key="login" style={{float: 'right'}}>
           <Link to={getLoginUri()}>로그인</Link>
@@ -55,10 +57,10 @@ export default function App(props) {
   }
 
   const getMyBookshelfUrl = () => {
-    if (!auth.get('loggedIn')) {
+    if (!auth.loggedIn) {
       return '#'
     }
-    return `/user/collection/${auth.get('user').id}/own`
+    return `/user/collection/${auth.user.id}/own`
   }
 
   const onLogout = () => {
@@ -78,12 +80,12 @@ export default function App(props) {
   )
 
   const drawUserInfo = () => {
-    if (auth.get('loggedIn')) {
+    if (auth.loggedIn) {
       return (
         <Menu.Item key="user-info" style={{float: 'right'}}>
           <Dropdown overlay={userMenu} trigger={['click']} >
             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-              {auth.get('user').nickname} <DownOutlined />
+              {auth.user.nickname} <DownOutlined />
             </a>
           </Dropdown>
         </Menu.Item>

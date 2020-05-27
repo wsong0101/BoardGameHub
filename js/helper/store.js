@@ -1,18 +1,10 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import { createLogger } from 'redux-logger';
-import { Map } from 'immutable'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { createLogger } from 'redux-logger'
+import rootReducer from '../reducer'
 
-import rootReducer from '../reducer';
+const loggerMiddleware = createLogger()
 
-const loggerMiddleware = createLogger();
-
-const initialState = Map();
-export const store = createStore(
-    rootReducer,
-    initialState,
-    applyMiddleware(
-        thunkMiddleware,
-        loggerMiddleware
-    )
-)
+export const store = configureStore({
+    reducer: rootReducer,
+    middleware: [loggerMiddleware, ...getDefaultMiddleware()]
+})

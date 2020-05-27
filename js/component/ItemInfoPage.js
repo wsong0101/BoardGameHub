@@ -15,19 +15,17 @@ import './ItemInfoPage.css'
 
 function ItemInfoPage({match}) {
     const auth = useSelector(state => state.get('authentication'))
-    const info = useSelector(state => state.get('item').get('info'))
+    const item = useSelector(state => state.get('item').get('item'))
+    const collection = useSelector(state => state.get('item').get('collection'))
 
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(userActions.getItemInfo(match.params.id))
     }, [])
 
-    const showModal = (e) => {
-        dispatch(userActions.showModal(e))
+    const showModal = () => {
+        dispatch(userActions.showModal(collection))
     }
-
-    const item = info ? info.item : undefined
-    const collection = info ? info.collection : undefined
 
     if (!item) {
         return (
@@ -79,6 +77,18 @@ function ItemInfoPage({match}) {
         )
     }
 
+    const drawCog = () => {
+        if (!collection) {
+            return
+        }
+        return (
+            <Descriptions.Item>
+                <ItemScore score={collection.Score} />
+                <i className="fas fa-cog text-info hand" onClick={() => {showModal()}}></i>
+            </Descriptions.Item>
+        )
+    }
+
     return (
         <div>
             <Row gutter={24}>
@@ -120,6 +130,7 @@ function ItemInfoPage({match}) {
                         <Descriptions.Item>
                             {drawBadges(2, "geekblue")}
                         </Descriptions.Item>
+                        {drawCog()}
                     </Descriptions>
                 </Col>
             </Row>

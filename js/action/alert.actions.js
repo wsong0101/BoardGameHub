@@ -1,5 +1,4 @@
-
-import { alertConstants } from '../constant'
+import { alertSuccess, alertError, alertClear } from '../reducer'
 
 export const alertActions = {
     success,
@@ -8,13 +7,13 @@ export const alertActions = {
 }
 
 function success(message) {
-    return { type: alertConstants.SUCCESS, message }
+    return alertSuccess(message)
 }
 
 function error(message) {
-    return { type: alertConstants.ERROR, message }
+    return alertError(message)
 }
 
 function clear() {
-    return { type: alertConstants.CLEAR }
+    return alertClear()
 }

@@ -42,6 +42,7 @@ export default function CollectionEditModal() {
   }
 
   const e = modal.get('collection')
+  console.log(e)
 
   const statusOptions = [
     { label: '보유중', value: 'own'},
@@ -60,7 +61,8 @@ export default function CollectionEditModal() {
     if (type == "memo" && value == e.Memo) {
       return
     }
-    dispatch(userActions.updateCollection(e.ID, type, value))
+    let id = e.ItemID ? e.ItemID : e.ID
+    dispatch(userActions.updateCollection(id, type, value))
   }
 
   return (

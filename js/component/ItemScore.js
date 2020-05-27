@@ -23,9 +23,9 @@ export default function ItemScore(props) {
   }
   
   return (
-    <div>      
+    <span>      
       <span className="mr-2 text-warning">{props.score}</span>
       {showStars(props.score)}
-    </div>
+    </span>
   )
 }

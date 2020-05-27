@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import DisplayNotice from '../common/displayNotice'
-import Util from '../util/util'
+import { Util } from '../util/util'
 
 export default function CollectionEditModal(props) {
   const [memo, setMemo] = useState("")

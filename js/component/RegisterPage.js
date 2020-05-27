@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { userActions } from '../action'
 import { inputRules } from '../common'
 
-import { Row, Col, Form, Input, Button, Checkbox } from 'antd'
+import { Row, Col, Form, Input, Button } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 function RegisterPage() {
-  const registering = useSelector(state => state.get('registration').get('registering'))
+  const registering = useSelector(state => state.registration.registering)
   const dispatch = useDispatch()
   
   function onFinish(inputs) {

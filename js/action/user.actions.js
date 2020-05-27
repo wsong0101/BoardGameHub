@@ -2,6 +2,7 @@ import { userConstants } from '../constant'
 import { userService } from '../service'
 import { alertActions } from './'
 import { history } from '../helper'
+import { authRequest, authSuccess, authFailure, authLogout } from '../reducer'
 
 export const userActions = {
     login,
@@ -16,35 +17,30 @@ export const userActions = {
 
 function login(username, password, remember, returnUrl) {
     return dispatch => {
-        dispatch(request({ username }))
-
+        dispatch(authRequest({ username }))
+    
         userService.login(username, password, remember)
             .then(
                 user => { 
-                    dispatch(success(user))
+                    dispatch(authSuccess(user))
                     returnUrl = returnUrl ? returnUrl : "/"
                     history.push(returnUrl)
                 },
                 error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()))
+                    dispatch(authFailure())
+                    // dispatch(alertActions.error(error.toString()))
                 }
             )
     }
-
-    function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-    function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 
 function logout() {
     userService.logout()
-        .then(
-            () => {
-                history.push('/')
-            }
-        )
-    return { type: userConstants.LOGOUT }
+    .then( () => {
+        history.push('/')
+        }
+    )
+    return authLogout()
 }
 
 function register(user) {
@@ -111,6 +107,7 @@ function updateCollection(id, type, value) {
             data => {
                 dispatch(success(id, type, value))
                 dispatch(updateModal(id, type, value))
+                dispatch(updateItemInfo(id, type, value))
             },
             error => {
                 dispatch(failure(error.toString()))
@@ -143,4 +140,8 @@ function getItemInfo(id) {
     function request() { return { type: userConstants.GET_ITEM_INFO_REQUEST } }
     function success(data) { return { type: userConstants.GET_ITEM_INFO_SUCCESS, data } }
     function failure(error) { return { type: userConstants.GET_ITEM_INFO_FAILURE, error } }
+}
+
+function updateItemInfo(id, type, value) {
+    return { type: userConstants.UPDATE_ITEM_INFO, update: { id, type, value } }
 }

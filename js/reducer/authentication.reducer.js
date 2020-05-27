@@ -1,28 +1,45 @@
-import { userConstants } from '../constant'
-import { Map } from 'immutable'
+import { createSlice } from '@reduxjs/toolkit'
 
 let user = JSON.parse(sessionStorage.getItem('user'))
-const initialState = user ? Map({ loggedIn: true, user: user }) : Map({ loggedIn: false, user: {} })
 
-export function authentication(state = initialState, action) {
-  switch (action.type) {
-    case userConstants.LOGIN_REQUEST:
-      return state.set('loggingIn', true)
-        .set('user', action.user)
-        .set('loggedIn', false)
-    case userConstants.LOGIN_SUCCESS:
-      return state.set('loggingIn', false)
-        .set('loggedIn', true)
-        .set('user', action.user)
-    case userConstants.LOGIN_FAILURE:
-      return state.set('loggedIn', false)
-        .set('logginIn', false)
-        .set('user', {})
-    case userConstants.LOGOUT:
-      return state.set('loggedIn', false)
-        .set('logginIn', false)
-        .set('user', {})
-    default:
-      return state
+const auth = createSlice({
+  name: 'auth',
+  initialState: user ? { loggedIn: true, user: user } : { loggedIn: false, user: {} },
+  reducers: {
+    authRequest: {
+      reducer(state, action) {
+        const { user } = action.payload
+        state.loggingIn = true
+        state.loggedIn = false
+        state.user = user
+      },
+      prepare(user) {
+        return { payload: { user } }
+      }
+    },
+    authSuccess: {
+      reducer(state, action) {
+        const { user } = action.payload
+        state.loggingIn = false
+        state.loggedIn = true
+        state.user = user
+      },
+      prepare(user) {
+        return { payload: {user} }
+      }
+    },
+    authFailure(state, action) {      
+      state.loggingIn = false
+      state.loggedIn = false
+      state.user = {}
+    },
+    authLogout(state, action) {
+      state.loggingIn = false
+      state.loggedIn = false
+      state.user = {}
+    },
   }
-}
+})
+
+export const { authRequest, authSuccess, authFailure, authLogout } = auth.actions
+export default auth.reducer

@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { createSelector } from '@reduxjs/toolkit';
 
 import { userActions } from '../action'
 import { inputRules } from '../common'
@@ -11,8 +12,8 @@ import './LoginPage.css'
 
 function LoginPage() {
     let query = new URLSearchParams(useLocation().search)
-    const loggingIn = useSelector(state => state.get('authentication').get('loggingIn'))
     const dispatch = useDispatch()
+    const loggingIn = useSelector(state => state.auth.loggingIn)
 
     function onFinish(inputs) {
         dispatch(userActions.login(inputs.username, inputs.password, inputs.remember, query.get("url")))
