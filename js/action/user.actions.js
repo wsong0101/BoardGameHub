@@ -1,6 +1,4 @@
-import { userConstants } from '../constant'
 import { userService } from '../service'
-import { alertActions } from './'
 import { history } from '../helper'
 import {
     alertError, 
