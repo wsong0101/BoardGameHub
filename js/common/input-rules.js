@@ -3,6 +3,7 @@ export const inputRules = {
     nickname,
     password,
     passwordRe,
+    geekusername,
 }
 
 function required() {
@@ -54,4 +55,8 @@ function password() {
 
 function passwordRe() {
     return [ required(), min(8), max(50), equalPassword ]
+}
+
+function geekusername() {
+    return [ required(), min(1), max(50) ]
 }

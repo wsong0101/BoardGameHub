@@ -5,8 +5,10 @@ import {
     authRequest, authSuccess, authFailure, authLogout,
     registerRequest, registerSuccess, registerFailure,
     collectionRequest, collectionSuccess, collectionFailure, collectionUpdate,
+    collectionImportRequest, collectionImportSuccess, collectionImportFailure,
     showModal as reducerShowModal, hideModal as reducerHideModal, updateModal as reducerUpdateModal,
     itemRequest, itemSuccess, itemFailure, itemUpdate,
+    itemImportRequest, itemImportSuccess, itemImportFailure,
 } from '../reducer'
 
 export const userActions = {
@@ -18,6 +20,8 @@ export const userActions = {
     hideModal,
     updateCollection,
     getItemInfo,
+    importGeek,
+    importGeekItem,
 }
 
 function login(username, password, remember, returnUrl) {
@@ -117,9 +121,44 @@ function getItemInfo(id) {
                 dispatch(itemSuccess(data))
             },
             error => {
-                dispatch(itemFailure(error.toString()))
+                dispatch(itemFailure())
                 dispatch(alertError(error.toString()))
             }
         )
     }
+}
+
+function importGeek(username) {
+    return dispatch => {
+        dispatch(collectionImportRequest())
+
+        userService.importGeek(username)
+        .then(
+            data => {
+                dispatch(collectionImportSuccess(data))
+            },
+            error => {
+                dispatch(collectionImportFailure())
+                dispatch(alertError(error.toString()))
+            }
+        )
+    }
+}
+
+function importGeekItem(geekId) {
+    return dispatch => {
+        dispatch(itemImportRequest())
+
+        userService.importGeekItem(geekId)
+        .then(
+            data => {
+                dispatch(itemImportSuccess())
+                dispatch(collectionUpdate(geekId, "exist", true))
+            },
+            error => {
+                dispatch(itemImportFailure())
+                dispatch(alertError(error.toString()))
+            }
+        )
+    }   
 }

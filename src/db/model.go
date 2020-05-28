@@ -55,6 +55,7 @@ type Item struct {
 	LanguageDependency       int
 	Tags                     []*Tag  `gorm:"many2many:item_tags"`
 	Expansions               []*Item `gorm:"many2many:expansions;association_jointable_foreignkey:expansion_id;association_autoupdate:false"`
+	ExpansionFor             []*Item `gorm:"many2many:expansion_for;association_jointable_foreignkey:expansion_for_id;association_autoupdate:false"`
 	Thumbnail                string  `gorm:"type:varchar(256)"`
 }
 

@@ -60,6 +60,8 @@ export class Util {
         return collection.Status = value
       case "memo":
         return collection.Memo = value
+      case "exist":
+        return collection.IsExistInDB = value
     }
   }
 

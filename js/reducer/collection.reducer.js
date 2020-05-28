@@ -41,8 +41,40 @@ const collection = createSlice({
         return { payload: { id, type, value } }
       }
     },
+    collectionImportRequest: {
+      reducer(state, action) {
+        state.importing = true
+      }
+    },
+    collectionImportSuccess: {
+      reducer(state, action) {
+        state.importing = false
+        state.collection = action.payload
+      },
+      prepare(data) {
+        data.sort((a, b) => {
+          if (a.IsExistInDB == b.IsExistInDB) {
+            return 0
+          }
+          if (a.IsExistInDB) {
+            return 1
+          }
+          return -1
+        })
+        return { payload: data }
+      }
+    },
+    collectionImportFailure: {
+      reducer(state, action) {
+        state.importing = false
+        state.collection = {}
+      }
+    }
   }
 })
 
-export const { collectionRequest, collectionSuccess, collectionFailure, collectionUpdate } = collection.actions
+export const {
+  collectionRequest, collectionSuccess, collectionFailure, collectionUpdate,
+  collectionImportRequest, collectionImportSuccess, collectionImportFailure,
+} = collection.actions
 export default collection.reducer

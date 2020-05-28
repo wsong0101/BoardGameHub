@@ -8,10 +8,8 @@ export const userService = {
     getCollection,
     updateCollection,
     getItemInfo,
-    getAll,
-    getById,
-    update,
-    delete: _delete
+    importGeek,
+    importGeekItem,
 }
 
 function login(username, password, remember) {
@@ -100,42 +98,26 @@ function getItemInfo(id) {
     .then(handleResponse)
 }
 
-function getAll() {
+function importGeek(username) {
     const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ geekName: username })
+    }
 
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/user/import`, requestOptions)
+    .then(handleResponse)
 }
 
-function getById(id) {
+function importGeekItem(geekId) {
     const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
-}
-
-function update(user) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
-    };
-
-    return fetch(`${config.apiUrl}/users/${user.id}`, requestOptions).then(handleResponse);;
-}
-
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-    const requestOptions = {
-        method: 'DELETE',
-        headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ geekId: geekId })
+    }
+    
+    return fetch(`${config.apiUrl}/item/import`, requestOptions)
+    .then(handleResponse)
 }
 
 function handleResponse(response) {

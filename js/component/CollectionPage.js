@@ -33,7 +33,7 @@ function CollectionPage({match}) {
                 cog = <i className="fas fa-cog text-info hand" onClick={() => {showModal(e)}}></i>
             }
 
-            items.push(         
+            items.push(
                 <Col key={e.ID} xl={{span: 3}} lg={{span: 4}} md={{span: 6}} xs={{span: 12}}>
                     <div className="h-100 border rounded d-flex flex-column justify-content-center">
                         <div className="card-img-div flex-grow-1 d-flex flex-column justify-content-center p-1">

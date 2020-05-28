@@ -22,6 +22,14 @@ const (
 	maxRetryCount = 3
 )
 
+type ImportInput struct {
+	GeekName string `json:"geekName" binding:"required"`
+}
+
+type ImportItemInput struct {
+	GeekID int `json:"geekId" binding:"required"`
+}
+
 type Name struct {
 	Type  string `xml:"type,attr"`
 	Value string `xml:"value,attr"`
@@ -48,9 +56,10 @@ type Poll struct {
 }
 
 type Link struct {
-	Type  string `xml:"type,attr"`
-	ID    int    `xml:"id,attr"`
-	Value string `xml:"value,attr"`
+	Type    string `xml:"type,attr"`
+	ID      int    `xml:"id,attr"`
+	Value   string `xml:"value,attr"`
+	InBound string `xml:"inbound,attr"`
 }
 
 type Item struct {
@@ -129,9 +138,13 @@ func callUserImportAPI(username string, retry int) (CollectionItems, error) {
 }
 
 func OnUserImport(c *gin.Context) {
-	username := c.PostForm("inputGeekUsername")
+	var input ImportInput
+	if err := c.ShouldBind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
 
-	items, err := callUserImportAPI(username, 0)
+	items, err := callUserImportAPI(input.GeekName, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -357,15 +370,25 @@ func importItemInfoFromGeek(id int) (db.Item, error) {
 			}
 
 			if link.Type == "boardgameexpansion" {
-				var expansion db.Item
-				expansion.ID = uint(link.ID)
-				dbItem.Expansions = append(dbItem.Expansions, &expansion)
+				if link.InBound == "true" {
+					var expansion db.Item
+					expansion.ID = uint(link.ID)
+					dbItem.ExpansionFor = append(dbItem.ExpansionFor, &expansion)
+				} else {
+					var expansion db.Item
+					expansion.ID = uint(link.ID)
+					dbItem.Expansions = append(dbItem.Expansions, &expansion)
+				}
 			}
 		}
 
 		dbCon.Create(&dbItem)
 
 		for _, expansion := range dbItem.Expansions {
+			importItemInfoFromGeek(int(expansion.ID))
+		}
+
+		for _, expansion := range dbItem.ExpansionFor {
 			importItemInfoFromGeek(int(expansion.ID))
 		}
 	}
@@ -390,14 +413,13 @@ func ReturnGeekInfo(c *gin.Context) {
 }
 
 func OnItemImport(c *gin.Context) {
-	idStr := c.PostForm("geekId")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
+	var input ImportItemInput
+	if err := c.ShouldBind(&input); err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	item, err := importItemInfoFromGeek(id)
+	item, err := importItemInfoFromGeek(input.GeekID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

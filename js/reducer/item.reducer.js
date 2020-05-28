@@ -35,8 +35,26 @@ const item = createSlice({
         return { payload: { type, value } }
       }
     },
+    itemImportRequest: {
+      reducer(state, action) {
+        state.importing = true
+      }
+    },
+    itemImportSuccess: {
+      reducer(state, action) {
+        state.importing = false
+      }
+    },
+    itemImportFailure: {
+      reducer(state, action) {
+        state.importing = false
+      }
+    }
   }
 })
 
-export const { itemRequest, itemSuccess, itemFailure, itemUpdate } = item.actions
+export const {
+  itemRequest, itemSuccess, itemFailure, itemUpdate,
+  itemImportRequest, itemImportSuccess, itemImportFailure,
+} = item.actions
 export default item.reducer
