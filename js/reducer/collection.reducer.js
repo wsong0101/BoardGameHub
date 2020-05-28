@@ -11,9 +11,10 @@ const collection = createSlice({
     collectionSuccess: {
       reducer(state, action) {
         const { collection } = action.payload
-
-        for (let col of collection.collection) {
-          col.Status = Util.getStatusListFromCollection(col)
+        if (collection.collection) {
+          for (let col of collection.collection) {
+            col.Status = Util.getStatusListFromCollection(col)
+          }
         }
       state.gettingCollection = false
       state.collection = collection.collection

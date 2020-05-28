@@ -7,7 +7,7 @@ import { Util } from '../util'
 import ItemScore from './ItemScore'
 import CollectionEditModal from './CollectionEditModal'
 
-import { Row, Col } from 'antd'
+import { Row, Col, Radio, Spin } from 'antd'
 import './CollectionPage.css'
 
 function CollectionPage({match}) {
@@ -17,14 +17,16 @@ function CollectionPage({match}) {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(userActions.getCollection(match.params.id, match.params.category, 1))
-    }, [])
+    }, [match.params.category])
 
     const showModal = (e) => {
         dispatch(userActions.showModal(e))
     }
 
     let items = []
-    if (collection.collection) {
+    if (collection.gettingCollection) {
+        items = <Spin size="large" />
+    } else if (collection.collection) {
         for (const e of collection.collection) {
             let cog
             if (auth.loggedIn && auth.user.id == match.params.id) {
@@ -56,6 +58,29 @@ function CollectionPage({match}) {
 
     return (
         <div>
+            <Radio.Group value={match.params.category} style={{ marginBottom: '30px' }}>
+                <Radio.Button value="own">
+                    <Link to={`/user/collection/${match.params.id}/own`}>보유중</Link>
+                </Radio.Button>
+                <Radio.Button value="prev_owned">
+                    <Link to={`/user/collection/${match.params.id}/prev_owned`}>이전에 보유</Link>
+                </Radio.Button>
+                <Radio.Button value="for_trade">
+                    <Link to={`/user/collection/${match.params.id}/for_trade`}>판매중</Link>
+                </Radio.Button>
+                <Radio.Button value="want">
+                    <Link to={`/user/collection/${match.params.id}/want`}>갖고싶음</Link>
+                </Radio.Button>
+                <Radio.Button value="want_to_buy">
+                    <Link to={`/user/collection/${match.params.id}/want_to_buy`}>구매중</Link>
+                </Radio.Button>
+                <Radio.Button value="wishlist">
+                    <Link to={`/user/collection/${match.params.id}/wishlist`}>위시리스트</Link>
+                </Radio.Button>
+                <Radio.Button value="preordered">
+                    <Link to={`/user/collection/${match.params.id}/preordered`}>사전주문</Link>
+                </Radio.Button>
+            </Radio.Group>
             <Row gutter={[12, 12]}>
                 {items}
             </Row>

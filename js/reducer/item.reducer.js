@@ -25,6 +25,9 @@ const item = createSlice({
     },
     itemUpdate: {
       reducer(state, action) {
+        if (!state.collection) {
+          return
+        }
         const { type, value } = action.payload
         Util.updateCollection(state.collection, type, value)
       },
