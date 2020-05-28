@@ -2,14 +2,13 @@ import React, {useEffect} from 'react'
 import { Route, Switch, Redirect, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import LoginRoute from './loginRoute'
-import PageUserImport from './page/pageUserImport'
 import ItemCreate from './page/ItemCreate'
 
 import { history } from './helper'
 import { alertActions, userActions } from './action'
 import {
-  LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage, MainPage,
+  LoginRoute, LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage, MainPage,
+  ImportPage,
 } from './component'
 
 import './App.css'
@@ -71,6 +70,9 @@ export default function App(props) {
       <Menu.Item key="bookshelf">
         <Link to={getMyBookshelfUrl()}>내 책장</Link>
       </Menu.Item>
+      <Menu.Item key="import">
+        <Link to="/user/import">Geek에서 가져오기(임시)</Link>
+      </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="logout">
         <a onClick={onLogout}>로그아웃</a>
@@ -131,7 +133,7 @@ export default function App(props) {
 
             <Route path="/user/collection/:id/:category" component={CollectionPage} />
             <Route path="/item/info/:id" component={ItemInfoPage} />
-            <LoginRoute exact path="/user/import" component={PageUserImport} />
+            <LoginRoute exact path="/user/import" component={ImportPage} />
             <LoginRoute exact path="/item/create" component={ItemCreate} />
             <Redirect from="*" to="/" />
           </Switch>
