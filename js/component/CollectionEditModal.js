@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { userActions } from '../action'
+import { itemActions } from '../action'
 
 import { Util } from '../util'
 
@@ -19,7 +19,7 @@ export default function CollectionEditModal() {
   }, [modal])
 
   const onCancel = () => {
-    dispatch(userActions.hideModal())
+    dispatch(itemActions.hideModal())
   }
 
   const getScore = (e) => {
@@ -62,7 +62,7 @@ export default function CollectionEditModal() {
       return
     }
     let id = e.ItemID ? e.ItemID : e.ID
-    dispatch(userActions.updateCollection(id, type, value))
+    dispatch(itemActions.updateCollection(id, type, value))
   }
 
   return (

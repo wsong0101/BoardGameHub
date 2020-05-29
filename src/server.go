@@ -28,6 +28,7 @@ func main() {
 	r.GET("/user/collection/:id/*category", returnApp)
 	r.GET("/item/create", returnApp)
 	r.GET("/item/info/:id", returnApp)
+	r.GET("/propose", returnApp)
 
 	loginAuth := r.Group("/")
 	loginAuth.Use(AuthRequired)
@@ -44,6 +45,7 @@ func main() {
 	loginAuth.POST("/item/import", geek.OnItemImport)
 	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)
 	r.POST("/item/info/:id", handler.OnItem)
+	loginAuth.POST("/propose", handler.OnPropose)
 
 	r.Static("/dist", "../dist")
 

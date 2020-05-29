@@ -49,6 +49,19 @@ const item = createSlice({
       reducer(state, action) {
         state.importing = false
       }
+    },
+    itemProposeKorean: {
+      reducer(state, action) {
+        state.propose = {
+          type: action.payload.type,
+          value: action.payload.name,
+          id: action.payload.id,
+          path: action.payload.path,
+        }
+      },
+      prepare(type, id, name, path) {
+        return { payload: { type, id, name, path } }
+      }
     }
   }
 })
@@ -56,5 +69,6 @@ const item = createSlice({
 export const {
   itemRequest, itemSuccess, itemFailure, itemUpdate,
   itemImportRequest, itemImportSuccess, itemImportFailure,
+  itemProposeKorean,
 } = item.actions
 export default item.reducer

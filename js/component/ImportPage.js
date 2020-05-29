@@ -6,7 +6,7 @@ import { Util } from '../util'
 
 import { Row, Col, Spin, Form, Input, Button, Alert } from 'antd'
 import { UserOutlined } from '@ant-design/icons';
-import { userActions } from '../action';
+import { itemActions } from '../action';
 
 import './CollectionPage.css'
 
@@ -16,11 +16,11 @@ function ImportPage() {
     const item = useSelector(state => state.item)
 
     const onFinish = (input) => {
-        dispatch(userActions.importGeek(input.geekname))
+        dispatch(itemActions.importGeek(input.geekname))
     }
 
     const importItem = (geekId) => {
-        dispatch(userActions.importGeekItem(geekId))
+        dispatch(itemActions.importGeekItem(geekId))
     }
 
     const drawButton = (geekId, isExist) => {

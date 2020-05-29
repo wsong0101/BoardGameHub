@@ -1,30 +1,30 @@
 import React, { useEffect } from 'react'
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { userActions } from '../action'
-import { inputRules } from '../common'
+import { history } from '../helper'
+import { itemActions } from '../action'
+import { itemProposeKorean } from '../reducer'
 import { Util } from '../util'
 import ItemScore from './ItemScore'
 import CollectionEditModal from './CollectionEditModal'
 
-import { Row, Col, Descriptions, Divider, Tag } from 'antd'
-import { UserOutlined, LockOutlined, StarFilled } from '@ant-design/icons'
-
+import { Row, Col, Descriptions, Divider, Tag, Tooltip } from 'antd'
 import './ItemInfoPage.css'
 
 function ItemInfoPage({match}) {
     const auth = useSelector(state => state.auth)
     const item = useSelector(state => state.item.item)
     const collection = useSelector(state => state.item.collection)
-
+    
+    const location = useLocation()
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(userActions.getItemInfo(match.params.id))
+        dispatch(itemActions.getItemInfo(match.params.id))
     }, [])
 
     const showModal = () => {
-        dispatch(userActions.showModal(collection))
+        dispatch(itemActions.showModal(collection))
     }
 
     if (!item) {
@@ -68,7 +68,7 @@ function ItemInfoPage({match}) {
 
         for(let tag of tags) {
             results.push(
-                <Tag key={tag.ID} color={color}>{Util.getName(tag)}</Tag>
+                <Tag key={tag.ID} color={color} className="mb-1">{Util.getName(tag)}</Tag>
             )
         }
 
@@ -89,6 +89,30 @@ function ItemInfoPage({match}) {
         )
     }
 
+    const proposeName = () => {
+        dispatch(itemProposeKorean("name", item.ID, item.PrimaryName, location.pathname))
+        history.push("/propose")
+    }
+
+    const drawName = (item) => {
+        const displayEdit = (item) => {
+            if (item.KoreanName == "") {
+                return (
+                    <Tooltip title="한글 이름 제안">
+                        <span><i className="fas fa-edit ml-2 hand" onClick={proposeName}></i></span>
+                    </Tooltip>
+                )
+            }
+        }
+
+        return (
+            <span>
+                {Util.getName(item)}
+                {displayEdit(item)}
+            </span>
+        )
+    }
+
     return (
         <div>
             <Row gutter={24}>
@@ -96,7 +120,7 @@ function ItemInfoPage({match}) {
                     <img src={item.Thumbnail} className="info-img" />
                 </Col>
                 <Col sm={{span: 18}}>
-                    <Descriptions title={Util.getName(item)} column={{xs: 2, sm: 3}} className="general-info">
+                    <Descriptions title={drawName(item)} column={{xs: 2, sm: 3}} className="general-info">
                         <Descriptions.Item>
                             <i className="fas fa-users"></i> {item.MinPlayers} ~ {item.MaxPlayers}인
                         </Descriptions.Item>

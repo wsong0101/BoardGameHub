@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { userActions } from '../action'
+import { itemActions } from '../action'
 import { Util } from '../util'
 import ItemScore from './ItemScore'
 import CollectionEditModal from './CollectionEditModal'
@@ -16,11 +16,11 @@ function CollectionPage({match}) {
 
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(userActions.getCollection(match.params.id, match.params.category, 1))
+        dispatch(itemActions.getCollection(match.params.id, match.params.category, match.params.page))
     }, [match.params.category])
 
     const showModal = (e) => {
-        dispatch(userActions.showModal(e))
+        dispatch(itemActions.showModal(e))
     }
 
     let items = []
@@ -30,7 +30,7 @@ function CollectionPage({match}) {
         for (const e of collection.collection) {
             let cog
             if (auth.loggedIn && auth.user.id == match.params.id) {
-                cog = <i className="fas fa-cog text-info hand" onClick={() => {showModal(e)}}></i>
+                cog = <i className="fas fa-cog text-info hand ml-2" onClick={() => {showModal(e)}}></i>
             }
 
             items.push(
@@ -44,10 +44,10 @@ function CollectionPage({match}) {
                         <div className="p-2 flex-grow-0">
                             <div>
                                 <ItemScore score={e.Score} />
+                                {cog}
                             </div>
                             <div className="pt-2 d-flex justify-content-between">
                                 {Util.getName(e)}
-                                {cog}
                             </div>
                         </div>
                     </div>
