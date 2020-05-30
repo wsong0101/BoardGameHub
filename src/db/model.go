@@ -59,9 +59,16 @@ type Item struct {
 	Thumbnail                string  `gorm:"type:varchar(256)"`
 }
 
+type Propose struct {
+	ProposeType string
+	ProposeID   uint
+	Value       string
+}
+
 func init() {
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Collection{})
 	db.AutoMigrate(&Item{})
 	db.AutoMigrate(&Tag{})
+	db.AutoMigrate(&Propose{})
 }

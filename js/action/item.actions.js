@@ -118,6 +118,7 @@ function proposeKorean(propose) {
         itemService.proposeKorean(propose)
         .then(
             data => {
+                console.log(propose)
                 history.push(propose.path)
             },
             error => {

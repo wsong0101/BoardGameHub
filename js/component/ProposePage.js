@@ -22,6 +22,7 @@ function ProposePage() {
             type: propose.type,
             id: propose.id,
             value: inputs.korean,
+            path: propose.path,
         }))
     }
 

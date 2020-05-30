@@ -55,5 +55,7 @@ func OnPropose(c *gin.Context) {
 		return
 	}
 
+	item.AddPropose(input.Type, uint(input.ID), input.Value)
+
 	c.JSON(http.StatusOK, "")
 }

@@ -21,3 +21,15 @@ func GetInfo(ID uint) (db.Item, error) {
 
 	return item, nil
 }
+
+func AddPropose(proposeType string, id uint, value string) {
+	dbCon := db.Get()
+
+	propose := db.Propose{
+		ProposeType: proposeType,
+		ProposeID:   id,
+		Value:       value,
+	}
+
+	dbCon.Save(&propose)
+}
