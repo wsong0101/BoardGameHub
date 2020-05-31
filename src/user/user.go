@@ -119,11 +119,11 @@ func GetSessionUser(c *gin.Context) (db.User, error) {
 	userID := value.(uint)
 
 	dbCon := db.Get()
-	dbCon.First(&user, userID)
-	if user.Email == "" {
+	if err := dbCon.First(&user, userID).Error; err != nil {
 		log.Fatalln("user session contains invalid id " + fmt.Sprint(userID))
 		return user, Logout(c)
 	}
+
 	return user, nil
 }
 

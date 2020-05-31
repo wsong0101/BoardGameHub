@@ -7,8 +7,8 @@ import ItemCreate from './page/ItemCreate'
 import { history } from './helper'
 import { alertActions, userActions } from './action'
 import {
-  LoginRoute, LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage, MainPage,
-  ImportPage, ProposePage,
+  LoginRoute, AdminRoute, LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage, MainPage,
+  ImportPage, ProposePage, AdminPage,
 } from './component'
 
 import './App.css'
@@ -136,6 +136,9 @@ export default function App(props) {
             <LoginRoute exact path="/user/import" component={ImportPage} />
             <LoginRoute exact path="/item/create" component={ItemCreate} />
             <LoginRoute exact path="/propose" component={ProposePage} />
+
+            <AdminRoute exact path="/admin" component={AdminPage} />
+
             <Redirect from="*" to="/" />
           </Switch>
         </div>      

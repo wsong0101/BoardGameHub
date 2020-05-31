@@ -12,6 +12,7 @@ type User struct {
 	Nickname    string `gorm:"type:varchar(30);unique_index"`
 	Password    string `gorm:"type:varchar(100)"`
 	Collections []Collection
+	Authority   int
 }
 
 type Collection struct {

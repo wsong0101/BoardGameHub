@@ -36,7 +36,12 @@ func OnLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"email": dbUser.Email, "nickname": dbUser.Nickname, "id": dbUser.ID})
+	c.JSON(http.StatusOK, gin.H{
+		"email":     dbUser.Email,
+		"nickname":  dbUser.Nickname,
+		"id":        dbUser.ID,
+		"authority": dbUser.Authority,
+	})
 }
 
 func OnLogout(c *gin.Context) {

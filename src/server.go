@@ -47,6 +47,10 @@ func main() {
 	r.POST("/item/info/:id", handler.OnItem)
 	loginAuth.POST("/propose", handler.OnPropose)
 
+	adminAuth := r.Group("/admin/")
+	adminAuth.Use(AdminRequired)
+	adminAuth.GET("/", returnApp)
+
 	r.Static("/dist", "../dist")
 
 	r.StaticFile("/favicon.ico", "../public/favicon.ico")
@@ -65,15 +69,24 @@ func returnApp(c *gin.Context) {
 }
 
 func AuthRequired(c *gin.Context) {
-	user, err := user.GetSessionUser(c)
+	_, err := user.GetSessionUser(c)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "login required"})
 		return
 	}
 
-	// Need to check user auth level (eg. normal, super, amdin..)
-	if user.Email == "" {
+	c.Next()
+}
+
+func AdminRequired(c *gin.Context) {
+	dbUser, err := user.GetSessionUser(c)
+	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "login required"})
+		return
+	}
+
+	if dbUser.Authority < 100 {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "auth required"})
 		return
 	}
 
