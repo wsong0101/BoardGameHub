@@ -6,6 +6,7 @@ import alertReducer from './alert.reducer'
 import collectionReducer from './collection.reducer'
 import modalReducer from './modal.reducer'
 import itemReducer from './item.reducer'
+import adminReducer from './admin.reducer'
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   collection: collectionReducer,
   modal: modalReducer,
   item: itemReducer,
+  admin: adminReducer,
 })
 
 export default rootReducer
@@ -24,3 +26,4 @@ export * from './alert.reducer'
 export * from './collection.reducer'
 export * from './modal.reducer'
 export * from './item.reducer'
+export * from './admin.reducer'

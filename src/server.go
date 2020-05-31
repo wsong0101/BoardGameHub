@@ -50,6 +50,7 @@ func main() {
 	adminAuth := r.Group("/admin/")
 	adminAuth.Use(AdminRequired)
 	adminAuth.GET("/", returnApp)
+	adminAuth.POST("/proposes", handler.OnProposeList)
 
 	r.Static("/dist", "../dist")
 
