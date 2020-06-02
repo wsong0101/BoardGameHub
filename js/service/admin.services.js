@@ -3,15 +3,37 @@ import { authHeader } from '../helper'
 
 export const adminService = {
   getProposes,
+  acceptPropose,
+  deletePropose,
 }
 
-function getProposes(username, password, remember) {
+function getProposes() {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
     }
 
     return fetch(`${config.apiUrl}/admin/proposes`, requestOptions)
+        .then(handleResponse)
+}
+
+function acceptPropose(id) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+    }
+
+    return fetch(`${config.apiUrl}/admin/propose/${id}`, requestOptions)
+        .then(handleResponse)
+}
+
+function deletePropose(id) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+    }
+
+    return fetch(`${config.apiUrl}/admin/propose/${id}`, requestOptions)
         .then(handleResponse)
 }
 

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/wsong0101/BoardGameHub/src/db"
@@ -34,4 +35,42 @@ func OnProposeList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, returns)
+}
+
+func OnProposeAccept(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var propose db.Propose
+	propose.ID = uint(id)
+
+	dbCon := db.Get()
+	dbCon.First(&propose)
+
+	if propose.ProposeType == "name" {
+		var item db.Item
+		item.ID = propose.ProposeID
+		dbCon.Find(&item)
+		item.KoreanName = propose.Value
+		err := dbCon.Save(&item).Error
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+	}
+
+	dbCon.Delete(&propose)
+
+	c.JSON(http.StatusOK, "")
+}
+
+func OnProposeDelete(c *gin.Context) {
+	idStr := c.Param("id")
+	dbCon := db.Get()
+	dbCon.Where("id = ?", idStr).Delete(db.Propose{})
+	c.JSON(http.StatusOK, "")
 }

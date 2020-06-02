@@ -51,6 +51,8 @@ func main() {
 	adminAuth.Use(AdminRequired)
 	adminAuth.GET("/", returnApp)
 	adminAuth.POST("/proposes", handler.OnProposeList)
+	adminAuth.PUT("/propose/:id", handler.OnProposeAccept)
+	adminAuth.DELETE("/propose/:id", handler.OnProposeDelete)
 
 	r.Static("/dist", "../dist")
 

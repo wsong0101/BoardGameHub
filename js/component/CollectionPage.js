@@ -60,25 +60,25 @@ function CollectionPage({match}) {
         <div>
             <Radio.Group value={match.params.category} style={{ marginBottom: '30px' }}>
                 <Radio.Button value="own">
-                    <Link to={`/user/collection/${match.params.id}/own`}>보유중</Link>
+                    <Link to={`/user/collection/${match.params.id}/own/1`}>보유중</Link>
                 </Radio.Button>
                 <Radio.Button value="prev_owned">
-                    <Link to={`/user/collection/${match.params.id}/prev_owned`}>이전에 보유</Link>
+                    <Link to={`/user/collection/${match.params.id}/prev_owned/1`}>이전에 보유</Link>
                 </Radio.Button>
                 <Radio.Button value="for_trade">
-                    <Link to={`/user/collection/${match.params.id}/for_trade`}>판매중</Link>
+                    <Link to={`/user/collection/${match.params.id}/for_trade/1`}>판매중</Link>
                 </Radio.Button>
                 <Radio.Button value="want">
-                    <Link to={`/user/collection/${match.params.id}/want`}>갖고싶음</Link>
+                    <Link to={`/user/collection/${match.params.id}/want/1`}>갖고싶음</Link>
                 </Radio.Button>
                 <Radio.Button value="want_to_buy">
-                    <Link to={`/user/collection/${match.params.id}/want_to_buy`}>구매중</Link>
+                    <Link to={`/user/collection/${match.params.id}/want_to_buy/1`}>구매중</Link>
                 </Radio.Button>
                 <Radio.Button value="wishlist">
-                    <Link to={`/user/collection/${match.params.id}/wishlist`}>위시리스트</Link>
+                    <Link to={`/user/collection/${match.params.id}/wishlist/1`}>위시리스트</Link>
                 </Radio.Button>
                 <Radio.Button value="preordered">
-                    <Link to={`/user/collection/${match.params.id}/preordered`}>사전주문</Link>
+                    <Link to={`/user/collection/${match.params.id}/preordered/1`}>사전주문</Link>
                 </Radio.Button>
             </Radio.Group>
             <Row gutter={[12, 12]}>

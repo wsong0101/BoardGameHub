@@ -61,6 +61,7 @@ type Item struct {
 }
 
 type Propose struct {
+	gorm.Model
 	ProposeType string
 	ProposeID   uint
 	Value       string
