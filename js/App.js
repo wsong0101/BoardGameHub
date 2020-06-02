@@ -8,7 +8,7 @@ import { history } from './helper'
 import { alertActions, userActions } from './action'
 import {
   LoginRoute, AdminRoute, LoginPage, RegisterPage, RegisterWelcomePage, CollectionPage, ItemInfoPage, MainPage,
-  ImportPage, ProposePage, AdminPage,
+  ImportPage, ProposePage, AdminPage, TagInfoPage,
 } from './component'
 
 import './App.css'
@@ -136,6 +136,7 @@ export default function App(props) {
             <LoginRoute exact path="/user/import" component={ImportPage} />
             <LoginRoute exact path="/item/create" component={ItemCreate} />
             <LoginRoute exact path="/propose" component={ProposePage} />
+            <Route exact path="/tag/info/:id" component={TagInfoPage} />
 
             <AdminRoute exact path="/admin" component={AdminPage} />
 

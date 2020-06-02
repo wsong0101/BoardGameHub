@@ -26,6 +26,11 @@ func OnProposeList(c *gin.Context) {
 			item.ID = element.ProposeID
 			dbCon.Find(&item).Select("PrimaryName")
 			original = item.PrimaryName
+		} else if element.ProposeType == "tag" {
+			var tag db.Tag
+			tag.ID = element.ProposeID
+			dbCon.First(&tag).Select("PrimaryName")
+			original = tag.PrimaryName
 		}
 
 		returns = append(returns, ReturnPropose{
@@ -57,6 +62,16 @@ func OnProposeAccept(c *gin.Context) {
 		dbCon.Find(&item)
 		item.KoreanName = propose.Value
 		err := dbCon.Save(&item).Error
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+	} else if propose.ProposeType == "tag" {
+		var tag db.Tag
+		tag.ID = propose.ProposeID
+		dbCon.Find(&tag)
+		tag.KoreanName = propose.Value
+		err := dbCon.Save(&tag).Error
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return

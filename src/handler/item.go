@@ -59,3 +59,20 @@ func OnPropose(c *gin.Context) {
 
 	c.JSON(http.StatusOK, "")
 }
+
+func OnTag(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var tag db.Tag
+	tag.ID = uint(id)
+
+	dbCon := db.Get()
+	dbCon.First(&tag)
+
+	c.JSON(http.StatusOK, tag)
+}

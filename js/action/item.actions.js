@@ -5,7 +5,7 @@ import {
     collectionRequest, collectionSuccess, collectionFailure, collectionUpdate,
     collectionImportRequest, collectionImportSuccess, collectionImportFailure,
     showModal as reducerShowModal, hideModal as reducerHideModal, updateModal as reducerUpdateModal,
-    itemRequest, itemSuccess, itemFailure, itemUpdate,
+    itemRequest, itemSuccess, itemFailure, itemUpdate, tagSuccess,
     itemImportRequest, itemImportSuccess, itemImportFailure,
 } from '../reducer'
 
@@ -18,6 +18,7 @@ export const itemActions = {
     importGeek,
     importGeekItem,
     proposeKorean,
+    getTagInfo,
 }
 
 function getCollection(userId, category, page) {
@@ -119,6 +120,20 @@ function proposeKorean(propose) {
         .then(
             data => {
                 history.push(propose.path)
+            },
+            error => {
+                dispatch(alertError(error.toString()))
+            }
+        )
+    }
+}
+
+function getTagInfo(id) {
+    return dispatch => {
+        itemService.getTagInfo(id)
+        .then(
+            data => {
+                dispatch(tagSuccess(data))
             },
             error => {
                 dispatch(alertError(error.toString()))

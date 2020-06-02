@@ -353,7 +353,7 @@ func importItemInfoFromGeek(id int) (db.Item, error) {
 		for _, link := range item.Links {
 			var dbTag db.Tag
 			dbTag.ID = uint(link.ID)
-			dbTag.PrimaryValue = link.Value
+			dbTag.PrimaryName = link.Value
 
 			if link.Type == "boardgamecategory" {
 				dbTag.TagType = common.ItemCategory

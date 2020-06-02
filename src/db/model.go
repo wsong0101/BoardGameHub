@@ -33,10 +33,10 @@ type Collection struct {
 
 type Tag struct {
 	gorm.Model
-	TagType      int     `gorm:"index"`
-	PrimaryValue string  `gorm:"type:varchar(256)"`
-	KoreanValue  string  `gorm:"type:varchar(256);index"`
-	Items        []*Item `gorm:"many2many:item_tags"`
+	TagType     int     `gorm:"index"`
+	PrimaryName string  `gorm:"type:varchar(256)"`
+	KoreanName  string  `gorm:"type:varchar(256);index"`
+	Items       []*Item `gorm:"many2many:item_tags"`
 }
 
 type Item struct {

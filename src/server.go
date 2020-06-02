@@ -29,6 +29,7 @@ func main() {
 	r.GET("/item/create", returnApp)
 	r.GET("/item/info/:id", returnApp)
 	r.GET("/propose", returnApp)
+	r.GET("/tag/info/:id", returnApp)
 
 	loginAuth := r.Group("/")
 	loginAuth.Use(AuthRequired)
@@ -46,6 +47,7 @@ func main() {
 	loginAuth.POST("/item/geekinfo", geek.ReturnGeekInfo)
 	r.POST("/item/info/:id", handler.OnItem)
 	loginAuth.POST("/propose", handler.OnPropose)
+	r.POST("/tag/info/:id", handler.OnTag)
 
 	adminAuth := r.Group("/admin/")
 	adminAuth.Use(AdminRequired)

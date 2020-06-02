@@ -8,6 +8,7 @@ export const itemService = {
     importGeek,
     importGeekItem,
     proposeKorean,
+    getTagInfo,
 }
 
 function getCollection(userId, category, page) {
@@ -86,6 +87,16 @@ function proposeKorean(propose) {
     }
     
     return fetch(`${config.apiUrl}/propose`, requestOptions)
+    .then(handleResponse) 
+}
+
+function getTagInfo(id) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    }
+    
+    return fetch(`${config.apiUrl}/tag/info/${id}`, requestOptions)
     .then(handleResponse) 
 }
 

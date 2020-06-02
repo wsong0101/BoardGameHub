@@ -3,15 +3,8 @@ export class Util {
     if (!elem) {
       return ""
     }
-    if (elem.KoreanName != undefined) {
-      if (elem.KoreanName == "") {
-        return elem.PrimaryName
-      }
-      return elem.KoreanName
-    }
-
-    if (elem.KoreanValue == "") {
-      return elem.PrimaryValue
+    if (elem.KoreanName == "") {
+      return elem.PrimaryName
     }
     return elem.KoreanName
   }

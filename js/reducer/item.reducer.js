@@ -62,6 +62,14 @@ const item = createSlice({
       prepare(type, id, name, path) {
         return { payload: { type, id, name, path } }
       }
+    },
+    tagSuccess: {
+      reducer(state, action) {
+        state.tag = action.payload.data
+      },
+      prepare(data) {
+        return { payload: { data } }
+      }
     }
   }
 })
@@ -69,6 +77,6 @@ const item = createSlice({
 export const {
   itemRequest, itemSuccess, itemFailure, itemUpdate,
   itemImportRequest, itemImportSuccess, itemImportFailure,
-  itemProposeKorean,
+  itemProposeKorean, tagSuccess,
 } = item.actions
 export default item.reducer
