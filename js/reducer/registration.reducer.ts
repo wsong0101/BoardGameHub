@@ -4,7 +4,7 @@ type SliceState = { registering: true } | { registering: false }
 
 const register = createSlice({
   name: 'register',
-  initialState: { registering: true } as SliceState,
+  initialState: { registering: false } as SliceState,
   reducers: {
     setRegisterState: {
       reducer(state, action: PayloadAction<boolean>) {

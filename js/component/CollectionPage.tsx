@@ -9,27 +9,31 @@ import CollectionEditModal from './CollectionEditModal'
 
 import { Row, Col, Radio, Spin } from 'antd'
 import './CollectionPage.css'
+import { RootState } from '../reducer'
+import { ICollection } from '../common'
 
-function CollectionPage({match}) {
-    const auth = useSelector(state => state.auth)
-    const collection = useSelector(state => state.collection)
+function CollectionPage({match}: any) {
+    const auth = useSelector((state: RootState) => state.auth)
+    const collection = useSelector((state: RootState) => state.collection)
 
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(itemActions.getCollection(match.params.id, match.params.category, match.params.page))
     }, [match.params.category])
 
-    const showModal = (e) => {
+    const showModal = (e: ICollection) => {
         dispatch(itemActions.showModal(e))
     }
 
     let items = []
     if (collection.gettingCollection) {
-        items = <Spin size="large" />
+        items.push(
+            <Spin key="0" size="large" />
+        )
     } else if (collection.collection) {
         for (const e of collection.collection) {
             let cog
-            if (auth.loggedIn && auth.user.id == match.params.id) {
+            if (auth.loggedIn && auth.user.ID == match.params.id) {
                 cog = <i className="fas fa-cog text-info hand ml-2" onClick={() => {showModal(e)}}></i>
             }
 

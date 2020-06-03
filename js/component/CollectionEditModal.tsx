@@ -5,42 +5,42 @@ import { itemActions } from '../action'
 import { Util } from '../util'
 
 import { Modal, Rate, Checkbox, Input } from 'antd'
+import { RootState } from '../reducer'
+import { ICollection, ICollectionUpdate } from '../common'
 const { TextArea } = Input;
 
 export default function CollectionEditModal() {
   const dispatch = useDispatch()
-  const modal = useSelector(state => state.modal)
+  const modal = useSelector((state: RootState) => state.modal)
   const [memo, setMemo] = useState("")
-
-  const e = modal.collection
   
   useEffect(() => {
-    setMemo(getMemo(e))
+    setMemo(getMemo(modal.collection))
   }, [modal])
 
-  const onCancel = () => {
+  function onCancel() {
     dispatch(itemActions.hideModal())
   }
 
-  const getScore = (e) => {
-    if (!e || !e.Score) {
+  function getScore(col: ICollection) {
+    if (!col || !col.Score) {
       return 0.0
     }
-    return e.Score / 2
+    return col.Score / 2
   }
 
-  const getMemo = (e) => {
-    if (!e || !e.Memo) {
+  function getMemo(col: ICollection) {
+    if (!col || !col.Memo) {
       return ""
     }
-    return e.Memo
+    return col.Memo
   }
 
-  const getStatus = (e) => {
-    if (!e) {
+  function getStatus(col: ICollection) {
+    if (!col) {
       return []
     }
-    return e.Status
+    return col.Status
   }
 
 
@@ -54,20 +54,32 @@ export default function CollectionEditModal() {
     { label: '사전주문', value: 'preordered'},
   ]
 
-  const sendUpdate = (type, value) => {
-    if (!e) {
+  const sendUpdate = (type: string, value: any) => {
+    if (type == "memo" && value == modal.collection.Memo) {
       return
     }
-    if (type == "memo" && value == e.Memo) {
-      return
+    let id = modal.collection.ItemID ? modal.collection.ItemID : modal.collection.ID
+    const update: ICollectionUpdate = {
+      ID: id ,
+      Type: type,     
     }
-    let id = e.ItemID ? e.ItemID : e.ID
-    dispatch(itemActions.updateCollection(id, type, value))
+    switch (type) {
+      case "score":
+        update.Score = value
+        break
+      case "memo":
+        update.Memo = value
+        break
+      case "status":
+        update.Status = value
+        break
+    }
+    dispatch(itemActions.updateCollection(update))
   }
 
   return (
     <Modal
-      title={Util.getName(e)}
+      title={Util.getName(modal.collection)}
       visible={modal.showModal}
       onCancel={onCancel}
       footer={null}
@@ -75,13 +87,13 @@ export default function CollectionEditModal() {
       <div>
         <Rate
           allowHalf allowClear
-          value={getScore(e)}
+          value={getScore(modal.collection)}
           onChange={(val) => {sendUpdate("score", val * 2)}}
         />
         <br/><br/>
         <Checkbox.Group
           options={statusOptions}
-          value={getStatus(e)}
+          value={getStatus(modal.collection)}
           onChange={(options) => {sendUpdate("status", options)}}
         />
         <br/><br/>

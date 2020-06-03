@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
-import { inputRules } from '../common'
+import { inputRules, IItem } from '../common'
 import { Util } from '../util'
 
 import { Row, Col, Spin, Form, Input, Button, Alert } from 'antd'
@@ -9,21 +9,22 @@ import { UserOutlined } from '@ant-design/icons';
 import { itemActions } from '../action';
 
 import './CollectionPage.css'
+import { RootState } from '../reducer';
 
 function ImportPage() {
     const dispatch = useDispatch()
-    const collection = useSelector(state => state.collection)
-    const item = useSelector(state => state.item)
+    const collection = useSelector((state: RootState) => state.collection)
+    const item = useSelector((state: RootState) => state.item)
 
-    const onFinish = (input) => {
+    const onFinish = (input: any) => {
         dispatch(itemActions.importGeek(input.geekname))
     }
 
-    const importItem = (geekId) => {
+    const importItem = (geekId: number) => {
         dispatch(itemActions.importGeekItem(geekId))
     }
 
-    const drawButton = (geekId, isExist) => {
+    const drawButton = (geekId: number, isExist: boolean) => {
         if (isExist) {
             return (
                 <h3 className="text-success"><i className="fas fa-check"></i></h3>
@@ -38,8 +39,8 @@ function ImportPage() {
 
     let items = []
     if (collection.importing) {
-        items = (
-            <Col>
+        items.push (
+            <Col key="0">
                 <Spin size="large" />
             </Col>
         )

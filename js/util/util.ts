@@ -1,8 +1,6 @@
 import { ICollection, IItem, ITag, ICollectionUpdate } from '../common'
 
 export class Util {
-  static getName(elem: IItem): any
-  static getName(elem: ITag): any
   static getName(elem: any) {
     if (elem.KoreanName == "") {
       return elem.PrimaryName
@@ -47,6 +45,9 @@ export class Util {
   }
 
   static updateCollection(collection: ICollection, update:ICollectionUpdate) {
+    if (!collection) {
+      return
+    }
     if (update.Score) {
       collection.Score = update.Score
     }
@@ -63,7 +64,7 @@ export class Util {
 
 
   static getStatusListFromCollection(collection: ICollection): string[] {
-    let status: string[]
+    let status = []
 
     if (collection.Own == 1) {
       status.push("own")

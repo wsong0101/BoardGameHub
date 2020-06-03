@@ -6,27 +6,33 @@ import { Util } from '../util'
 import { itemProposeKorean } from '../reducer'
 
 import { Tooltip } from 'antd'
+import { IItem, ITag } from '../common'
 
-function DisplayName(props) {
+type DisplayProps = {
+    item?: IItem
+    tag?: ITag
+}
+
+function DisplayName({item, tag}: DisplayProps) {
     const dispatch = useDispatch()
 
-    const proposeName = (item, type) => {
-        dispatch(itemProposeKorean(type, item.ID, item.PrimaryName, location.pathname))
+    const proposeName = (target: any, type: string) => {
+        dispatch(itemProposeKorean(type, target.ID, target.PrimaryName, location.pathname))
         history.push("/propose")
     }
 
-    const displayEdit = (item, type) => {
-        if (item.KoreanName == "") {
+    const displayEdit = (target: any, type: string) => {
+        if (target.KoreanName == "") {
             return (
                 <Tooltip title="한글 이름 제안">
-                    <span><i className="fas fa-edit ml-2 hand" onClick={() => {proposeName(item, type)}}></i></span>
+                    <span><i className="fas fa-edit ml-2 hand" onClick={() => {proposeName(target, type)}}></i></span>
                 </Tooltip>
             )
         }
     }
 
-    let target = props.item ? props.item : props.tag
-    let type = props.item ? "name" : "tag"
+    let target = item ? item : tag
+    let type = item ? "name" : "tag"
 
     return (
         <span>

@@ -105,7 +105,7 @@ function importGeekItem(geekId: number) {
         .then(
             data => {
                 dispatch(setImportState(false))
-                dispatch(collectionUpdate({ ID: geekId, IsExistInDB: true}))
+                dispatch(collectionUpdate({ ID: geekId, Type: "", IsExistInDB: true}))
             },
             error => {
                 dispatch(setImportState(false))

@@ -30,14 +30,12 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ["*", ".ts", ".tsx"] },
+  resolve: { extensions: ["*", ".ts", ".tsx", ".js", ".jsx"] },
   output: {
     path: path.resolve(__dirname, "dist/"),
     publicPath: "/dist/",
     filename: "bundle.js"
   },
   externals: {
-    "react": "React",
-    "react-dom": "ReactDOM"
   }
 };

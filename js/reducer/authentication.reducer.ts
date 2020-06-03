@@ -9,13 +9,13 @@ interface SliceState {
 
 let user = JSON.parse(sessionStorage.getItem('user'))
 
-let initialState: SliceState
-initialState.loggingIn = false
+let initialState = {
+  loggingIn: false,
+  loggedIn: false,
+} as SliceState
 if (user) {
   initialState.loggedIn = true
   initialState.user = user as IUser
-} else {
-  initialState.loggedIn = false
 }
 
 const auth = createSlice({

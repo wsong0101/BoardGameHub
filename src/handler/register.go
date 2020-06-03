@@ -37,10 +37,10 @@ func OnLogin(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"email":     dbUser.Email,
-		"nickname":  dbUser.Nickname,
-		"id":        dbUser.ID,
-		"authority": dbUser.Authority,
+		"Email":     dbUser.Email,
+		"Nickname":  dbUser.Nickname,
+		"ID":        dbUser.ID,
+		"Authority": dbUser.Authority,
 	})
 }
 

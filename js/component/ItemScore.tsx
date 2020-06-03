@@ -1,7 +1,11 @@
 import React from 'react'
 
-export default function ItemScore(props) {
-  const showStars = (score) => {
+type Score = {
+  score: number
+}
+
+export default function ItemScore({score}: Score) {
+  function showStars (score: number) {
     let stars = []
     
     let i = 0
@@ -24,8 +28,8 @@ export default function ItemScore(props) {
   
   return (
     <span>      
-      <span className="mr-2 text-warning">{props.score}</span>
-      {showStars(props.score)}
+      <span className="mr-2 text-warning">{score}</span>
+      {showStars(score)}
     </span>
   )
 }

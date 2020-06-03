@@ -10,11 +10,12 @@ import CollectionEditModal from './CollectionEditModal'
 import { DisplayName } from './'
 import { Row, Col, Descriptions, Divider, Tag, Tooltip } from 'antd'
 import './ItemInfoPage.css'
+import { RootState } from '../reducer'
 
-function ItemInfoPage({match}) {
-    const auth = useSelector(state => state.auth)
-    const item = useSelector(state => state.item.item)
-    const collection = useSelector(state => state.item.collection)
+function ItemInfoPage({match}: any) {
+    const auth = useSelector((state: RootState) => state.auth)
+    const item = useSelector((state: RootState) => state.item.item)
+    const collection = useSelector((state: RootState) => state.item.collection)
     
     const location = useLocation()
     const dispatch = useDispatch()
@@ -32,7 +33,7 @@ function ItemInfoPage({match}) {
         )
     }
 
-    const drawTags = (type) => {
+    const drawTags = (type: number) => {
         if (!item.Tags) {
             return
         }
@@ -58,7 +59,7 @@ function ItemInfoPage({match}) {
         )
     }
 
-    const drawBadges = (type, color) => {
+    const drawBadges = (type: number, color: string) => {
         if (!item.Tags) {
             return
         }

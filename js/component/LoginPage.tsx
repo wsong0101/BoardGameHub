@@ -9,13 +9,14 @@ import { inputRules } from '../common'
 import { Row, Col, Form, Input, Button, Checkbox } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './LoginPage.css'
+import { RootState } from '../reducer';
 
 function LoginPage() {
     let query = new URLSearchParams(useLocation().search)
     const dispatch = useDispatch()
-    const loggingIn = useSelector(state => state.auth.loggingIn)
+    const loggingIn = useSelector((state: RootState) => state.auth.loggingIn)
 
-    function onFinish(inputs) {
+    function onFinish(inputs: any) {
         dispatch(userActions.login(inputs.username, inputs.password, inputs.remember, query.get("url")))
     }
 

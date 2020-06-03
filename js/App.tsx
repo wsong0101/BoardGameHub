@@ -2,8 +2,6 @@ import React, {useEffect} from 'react'
 import { Route, Switch, Redirect, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import ItemCreate from './page/ItemCreate'
-
 import { history } from './helper'
 import { alertActions, userActions } from './action'
 import {
@@ -16,14 +14,15 @@ import './App.css'
 import { Layout, Menu, Breadcrumb, Alert, Dropdown, PageHeader } from 'antd'
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
+import { RootState } from './reducer';
 const { Header, Content, Footer } = Layout
 
-export default function App(props) {
+export default function App() {
   const location = useLocation()
   const dispatch = useDispatch()
   
-  const alert = useSelector(state => state.alert)
-  const auth = useSelector(state => state.auth)
+  const alert = useSelector((state: RootState) => state.alert)
+  const auth = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
     history.listen((location, action) => {
@@ -36,10 +35,11 @@ export default function App(props) {
     return "/login?url=" + encodeURIComponent(location.pathname)
   }
 
+  type alertType = 'success' | 'info' | 'warning' | 'error'
   const drawAlert = () => {
-    if (alert.message) {
+    if (alert.Message) {
       return (
-        <Alert message={alert.message} type={alert.type} showIcon />
+        <Alert message={alert.Message} type={alert.Type as alertType} showIcon />
       )
     }
   }
@@ -58,7 +58,7 @@ export default function App(props) {
     if (!auth.loggedIn) {
       return '#'
     }
-    return `/user/collection/${auth.user.id}/own/1`
+    return `/user/collection/${auth.user.ID}/own/1`
   }
 
   const onLogout = () => {
@@ -86,7 +86,7 @@ export default function App(props) {
         <Menu.Item key="user-info" style={{float: 'right'}}>
           <Dropdown overlay={userMenu} trigger={['click']} >
             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-              {auth.user.nickname} <DownOutlined />
+              {auth.user.Nickname} <DownOutlined />
             </a>
           </Dropdown>
         </Menu.Item>
@@ -134,7 +134,6 @@ export default function App(props) {
             <Route exact path="/user/collection/:id/:category/:page" component={CollectionPage} />
             <Route exact path="/item/info/:id" component={ItemInfoPage} />
             <LoginRoute exact path="/user/import" component={ImportPage} />
-            <LoginRoute exact path="/item/create" component={ItemCreate} />
             <LoginRoute exact path="/propose" component={ProposePage} />
             <Route exact path="/tag/info/:id" component={TagInfoPage} />
 

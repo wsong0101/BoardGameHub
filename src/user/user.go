@@ -16,10 +16,10 @@ const (
 )
 
 type RegisterForm struct {
-	Email      string `json:"username" binding:"required"`
-	Nickname   string `json:"nickname" binding:"required"`
-	Password   string `json:"password" binding:"required"`
-	PasswordRe string `json:"passwordRe" binding:"required"`
+	Email      string `json:"Email" binding:"required"`
+	Nickname   string `json:"Nickname" binding:"required"`
+	Password   string `json:"Password" binding:"required"`
+	PasswordRe string `json:"PasswordRe" binding:"required"`
 }
 
 type LoginInput struct {
@@ -28,11 +28,11 @@ type LoginInput struct {
 }
 
 type UpdateCollectionInput struct {
-	ID     uint     `json:"id" binding:"required"`
-	Type   string   `json:"type" binding:"required"`
-	Score  int      `json:"score"`
-	Memo   string   `json:"memo"`
-	Status []string `json:"status"`
+	ID     uint     `json:"ID" binding:"required"`
+	Type   string   `json:"Type" binding:"required"`
+	Score  int      `json:"Score"`
+	Memo   string   `json:"Memo"`
+	Status []string `json:"Status"`
 }
 
 type CollectionCounts struct {

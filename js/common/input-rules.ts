@@ -10,8 +10,9 @@ function required() {
     return { required: true, message: '필수 입력사항입니다.' }
 }
 
+type validateType = 'string' | 'number' | 'boolean' | 'method' | 'regexp' | 'integer' | 'float' | 'object' | 'enum' | 'date' | 'url' | 'hex' | 'email'
 function email() {
-    return { type: 'email', message: '이메일 형식이어야 합니다.' }
+    return { type: 'email' as validateType, message: '이메일 형식이어야 합니다.' }
 }
 
 function min(val: number) {
@@ -25,7 +26,7 @@ function max(val: number) {
 function equalPassword ({ getFieldValue }: any) {
     return {
         validator: (rule: any, value: string) => {
-            if (!value || getFieldValue('password') == value) {
+            if (!value || getFieldValue('Password') == value) {
                 return Promise.resolve()
             }
             return Promise.reject('두 비밀번호는 같아야 합니다.')

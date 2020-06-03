@@ -16,16 +16,20 @@ const collection = createSlice({
       state.gettingCollection = true
     },
     collectionSuccess: {
-      reducer(state, action: PayloadAction<ICollection[]>) {
-        const collection = action.payload
+      reducer(state, action: PayloadAction<any>) {
+        const collection = action.payload.collection
+        state.gettingCollection = false
+        state.collection = collection
+        
+        if (!collection) {
+          return
+        }
         for (let col of collection) {
           col.Status = Util.getStatusListFromCollection(col)
         }
-        state.gettingCollection = false
-        state.collection = collection
       },
-      prepare(collection: ICollection[]) {
-        return { payload: collection }
+      prepare(data: any) {
+        return { payload: data }
       }
     },
     collectionFailure(state) {      

@@ -6,17 +6,31 @@ export interface IUser {
 }
 
 export interface IItem {
+	ID: number
 	PrimaryName: string
 	KoreanName: string
+	Thumbnail: string
+	MinPlayers: number
+	MaxPlayers: number
+	MinPlayingTime: number
+	MaxPlayingTime: number
+	MinAge: number
+	BestNumPlayers: number
+	RecommendNumPlayers: number
+	NotRecommendedNumPlayers: number
+	Tags: ITag[]
 }
 
 export interface ITag {
+	ID: number
+	TagType: number
 	PrimaryName: string
 	KoreanName: string
 }
 
 export interface ICollection {
 	ID:          number
+	ItemID?: number
 	PrimaryName: string
 	KoreanName:  string
 	Thumbnail:   string
@@ -35,6 +49,7 @@ export interface ICollection {
 
 export interface ICollectionUpdate {
 	ID: number
+	Type: string
 	Score?: number
 	Status?: string[]
 	Memo?: string
