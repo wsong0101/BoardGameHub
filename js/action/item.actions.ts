@@ -6,8 +6,9 @@ import {
     collectionImportRequest, collectionImportSuccess, collectionImportFailure,
     showModal as reducerShowModal, hideModal as reducerHideModal, updateModal as reducerUpdateModal,
     itemRequest, itemSuccess, itemFailure, itemUpdate, tagSuccess,
-    itemImportRequest, itemImportSuccess, itemImportFailure,
+    setImportState,
 } from '../reducer'
+import { ICollection, ICollectionUpdate, IPropose } from '../common'
 
 export const itemActions = {
     getCollection,
@@ -21,8 +22,8 @@ export const itemActions = {
     getTagInfo,
 }
 
-function getCollection(userId, category, page) {
-    return dispatch => {
+function getCollection(userId: number, category: string, page:number) {
+    return (dispatch: any) => {
         dispatch(collectionRequest())
 
         itemService.getCollection(userId, category, page)
@@ -38,7 +39,7 @@ function getCollection(userId, category, page) {
     }
 }
 
-function showModal(collection) {
+function showModal(collection: ICollection) {
     return reducerShowModal(collection)
 }
 
@@ -46,14 +47,14 @@ function hideModal() {
     return reducerHideModal()
 }
 
-function updateCollection(id, type, value) {
-    return dispatch => {
-        itemService.updateCollection(id, type, value)
+function updateCollection(update: ICollectionUpdate) {
+    return (dispatch: any) => {
+        itemService.updateCollection(update)
         .then(
             data => {
-                dispatch(collectionUpdate(id, type, value))
-                dispatch(reducerUpdateModal(type, value))
-                dispatch(itemUpdate(type, value))
+                dispatch(collectionUpdate(update))
+                dispatch(reducerUpdateModal(update))
+                dispatch(itemUpdate(update))
             },
             error => {
                 dispatch(alertError(error.toString()))
@@ -62,8 +63,8 @@ function updateCollection(id, type, value) {
     }
 }
 
-function getItemInfo(id) {
-    return dispatch => {
+function getItemInfo(id: number) {
+    return (dispatch: any) => {
         dispatch(itemRequest())
 
         itemService.getItemInfo(id)
@@ -79,8 +80,8 @@ function getItemInfo(id) {
     }
 }
 
-function importGeek(username) {
-    return dispatch => {
+function importGeek(username: string) {
+    return (dispatch: any) => {
         dispatch(collectionImportRequest())
 
         itemService.importGeek(username)
@@ -96,30 +97,30 @@ function importGeek(username) {
     }
 }
 
-function importGeekItem(geekId) {
-    return dispatch => {
-        dispatch(itemImportRequest())
+function importGeekItem(geekId: number) {
+    return (dispatch: any) => {
+        dispatch(setImportState(true))
 
         itemService.importGeekItem(geekId)
         .then(
             data => {
-                dispatch(itemImportSuccess())
-                dispatch(collectionUpdate(geekId, "exist", true))
+                dispatch(setImportState(false))
+                dispatch(collectionUpdate({ ID: geekId, IsExistInDB: true}))
             },
             error => {
-                dispatch(itemImportFailure())
+                dispatch(setImportState(false))
                 dispatch(alertError(error.toString()))
             }
         )
     }   
 }
 
-function proposeKorean(propose) {
-    return dispatch => {
+function proposeKorean(propose: IPropose) {
+    return (dispatch: any) => {
         itemService.proposeKorean(propose)
         .then(
             data => {
-                history.push(propose.path)
+                history.push(propose.ReturnPath)
             },
             error => {
                 dispatch(alertError(error.toString()))
@@ -128,8 +129,8 @@ function proposeKorean(propose) {
     }
 }
 
-function getTagInfo(id) {
-    return dispatch => {
+function getTagInfo(id: number) {
+    return (dispatch: any) => {
         itemService.getTagInfo(id)
         .then(
             data => {

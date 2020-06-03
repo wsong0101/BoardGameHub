@@ -3,8 +3,9 @@ import { history } from '../helper'
 import {
     alertError, 
     authRequest, authSuccess, authFailure, authLogout,
-    registerRequest, registerSuccess, registerFailure,
+    setRegisterState,
 } from '../reducer'
+import { IUser } from '../common'
 
 export const userActions = {
     login,
@@ -12,9 +13,9 @@ export const userActions = {
     register,
 }
 
-function login(username, password, remember, returnUrl) {
-    return dispatch => {
-        dispatch(authRequest({ username }))
+function login(username: string, password: string, remember: boolean, returnUrl: string) {
+    return (dispatch: any) => {
+        dispatch(authRequest())
     
         userService.login(username, password, remember)
             .then(
@@ -39,18 +40,18 @@ function logout() {
     return authLogout()
 }
 
-function register(user) {
-    return dispatch => {
-        dispatch(registerRequest(user))
+function register(user: IUser) {
+    return (dispatch: any) => {
+        dispatch(setRegisterState(true))
 
         userService.register(user)
         .then(
             user => { 
-                dispatch(registerSuccess())
+                dispatch(setRegisterState(false))
                 history.push('/register/welcome')
             },
             error => {
-                dispatch(registerFailure(error.toString()))
+                dispatch(setRegisterState(false))
                 dispatch(alertError(error.toString()))
             }
         )

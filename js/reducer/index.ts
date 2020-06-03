@@ -20,6 +20,8 @@ const rootReducer = combineReducers({
 
 export default rootReducer
 
+export type RootState = ReturnType<typeof rootReducer>
+
 export * from './authentication.reducer'
 export * from './registration.reducer'
 export * from './alert.reducer'

@@ -1,20 +1,20 @@
-import config from 'config'
 import { authHeader } from '../helper'
 
 export const userService = {
     login,
     logout,
     register,
+    handleResponse,
 }
 
-function login(username, password, remember) {
+function login(username: string, password: string, remember: boolean) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
     }
 
-    return fetch(`${config.apiUrl}/login`, requestOptions)
+    return fetch(`/login`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in session storage to keep user logged in between page refreshes
@@ -29,7 +29,7 @@ function logout() {
         headers: authHeader()
     }
 
-    return fetch(`${config.apiUrl}/logout`, requestOptions)
+    return fetch(`/logout`, requestOptions)
     .then(handleResponse)
     .then(() => {
         // remove user from session storage to log user out
@@ -37,29 +37,29 @@ function logout() {
     })
 }
 
-function register(user) {
+function register(user: any) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     }
 
-    return fetch(`${config.apiUrl}/register`, requestOptions).then(handleResponse);
+    return fetch(`/register`, requestOptions).then(handleResponse)
 }
 
-function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
+function handleResponse(response: any) {
+    return response.text().then((text: string) => {
+        const data = text && JSON.parse(text)
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
-                logout();
-                location.reload(true);
+                logout()
+                location.reload(true)
             }
             const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
+            return Promise.reject(error)
         }
 
         return data;
-    });
+    })
 }

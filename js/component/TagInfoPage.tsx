@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { itemActions } from '../action'
 import { DisplayName } from './'
+import { RootState } from '../reducer'
 
-function TagInfoPage({match}) {
-    const tag = useSelector(state => state.item.tag)
+function TagInfoPage({match}: any) {
+    const tag = useSelector((state: RootState) => state.item.tag)
     const dispatch = useDispatch()
 
     useEffect(() => {

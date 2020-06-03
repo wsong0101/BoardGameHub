@@ -12,7 +12,7 @@ export const adminActions = {
 }
 
 function getProposes() {
-  return dispatch => {    
+  return (dispatch: any) => {    
     adminService.getProposes()
     .then(
       data => { 
@@ -25,12 +25,12 @@ function getProposes() {
   }
 }
 
-function acceptPropose(id) {
-  return dispatch => {    
+function acceptPropose(id: number) {
+  return (dispatch: any) => {    
     adminService.acceptPropose(id)
     .then(
       data => {
-        history.go()
+        history.go(0)
       },
       error => {
         dispatch(alertError(error.toString()))
@@ -39,12 +39,12 @@ function acceptPropose(id) {
   }
 }
 
-function deletePropose(id) {
-  return dispatch => {    
+function deletePropose(id: number) {
+  return (dispatch: any) => {    
     adminService.deletePropose(id)
     .then(
       data => {
-        history.go()
+        history.go(0)
       },
       error => {
         dispatch(alertError(error.toString()))
